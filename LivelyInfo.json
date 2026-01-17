@@ -1,0 +1,17 @@
+{
+  "AppVersion": "1.0.0.0",
+  "Title": "RayVis v1.0",
+  "Thumbnail": "rayvis.png",
+  "Preview": null,
+  "Desc": "Music visualizer using javascript",
+  "Author": "Sunghwan1234",
+  "License": "License.txt",
+  "Contact": "",
+  "Type": 1,
+  "FileName": "index.html",
+  "Arguments": "--audio --pause-event true --system-nowplaying",
+  "IsAbsolutePath": false,
+  "Id": null,
+  "Tags": null,
+  "Version": "26.1.0.0"
+}

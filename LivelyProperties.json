@@ -1,0 +1,125 @@
+{
+  "blur": {
+    "min": 0,
+    "max": 10,
+    "step": 1,
+    "text": "Blur",
+    "help": "Higher values make it blurrier",
+    "type": "slider",
+    "value": 2
+  },
+  "indexMultiplier": {
+    "min": 0,
+    "max": 5,
+    "step": 0.01,
+    "text": "Index Multiplier",
+    "help": "Higher values make it bigger",
+    "type": "slider",
+    "value": 3
+  },
+  "tanInner": {
+    "min": 0.01,
+    "max": 2.00,
+    "step": 0.01,
+    "text": "tanInner",
+    "help": "Inside of tan(x)",
+    "type": "slider",
+    "value": 0.4
+  },
+  "tanOuter": {
+    "min": 0,
+    "max": 100,
+    "step": 0.01,
+    "text": "Volume Multiplier",
+    "help": "Default 40",
+    "type": "slider",
+    "value": 40
+  },
+  "maxVolume": {
+    "min": 0,
+    "max": 200,
+    "step": 0.01,
+    "text": "Maximum Volume",
+    "help": "Also controls the maximum height of the bars",
+    "type": "slider",
+    "value": 200
+  },
+  "despawnVolume": {
+    "min": 0,
+    "max": 10,
+    "step": 1,
+    "text": "despawnVolume",
+    "help": "What Volume to despawn (up for performance)",
+    "type": "slider",
+    "value": 0
+  },
+  "volumeColorMultiplier": {
+    "min": 0,
+    "max": 10,
+    "step": 0.1,
+    "text": "Volume Color Multiplier",
+    "help": "Higher values make is more color-changing",
+    "type": "slider",
+    "value": 5
+  },
+  "heightStart": {
+    "min": 0,
+    "max": 300,
+    "step": 1,
+    "text": "Starting Height",
+    "help": "125 if unsure",
+    "type": "slider",
+    "value": 125
+  },
+  "heightMax": {
+    "min": 0,
+    "max": 300,
+    "step": 1,
+    "text": "Maximum Height",
+    "help": "",
+    "type": "slider",
+    "value": 300
+  },
+  "scaleX": {
+    "min": 0.001,
+    "max": 0.100,
+    "step": 0.001,
+    "text": "X Scaling",
+    "help": "Default 0.005",
+    "type": "slider",
+    "value": 0.005
+  },
+  "scaleXMin": {
+    "min": 0.01,
+    "max": 0.99,
+    "step": 0.01,
+    "text": "Minimum X Scale",
+    "help": "Default 0.10",
+    "type": "slider",
+    "value": 0.10
+  },
+  "scaleY": {
+    "min": 0.01,
+    "max": 5.0,
+    "step": 0.01,
+    "text": "Y Scaling",
+    "help": "mess around with it",
+    "type": "slider",
+    "value": 0.10
+  },
+  "transition": {
+    "min": 0,
+    "max": 1,
+    "step": 0.05,
+    "text": "Transition Speed",
+    "help": "How fast the bars transition",
+    "type": "slider",
+    "value": 0.2
+  },
+  "fpsLock": {
+    "type": "checkbox",
+    "value": false,
+    "help": "Improves performance",
+    "text": "30FPS Lock"
+  }
+}
