@@ -17,6 +17,7 @@ try {
       despawnVolume: 0,
       volumeColorMultiplier: 5,
       heightStart: 125,
+      heightMultiplier: 1,
       heightMax: 0,
       scaleX: 1,
       scaleXMin: 0,
@@ -57,10 +58,10 @@ try {
 
       case "despawnVolume": settings.despawnVolume = val; break;
 
-      case "volumeColorMultiplier": settings.volumeColorMultiplier = val;
-        break;
+      case "volumeColorMultiplier": settings.volumeColorMultiplier = val; break;
       
       case "heightStart": settings.heightStart = val; break;
+      case "heightMultiplier": settings.heightMultiplier = val; break;
       case "heightMax": settings.heightMax = val; break;
 
       case "scaleX": settings.scaleX = val; break;
@@ -69,8 +70,7 @@ try {
       
       case "transition": settings.transition = val; break;
 
-      case "fpsLock": settings.fps = val ? 30 : 60;
-        break;
+      case "fpsLock": settings.fps = val ? 30 : 60; break;
     }
   }
 
@@ -118,7 +118,7 @@ try {
         hsl(${Math.floor(settings.volumeColorMultiplier*volume+(255/bufferLength)*item)},40%,40%)`;
       elements[item].style.transform = `
         rotateZ(${item * ((360/elementLength))}deg) 
-        translate(-50%, ${clamp(volume + settings.heightStart,0,settings.heightMax)}px) 
+        translate(-50%, ${clamp(settings.heightMultiplier*volume + settings.heightStart,0,settings.heightMax)}px) 
         scaleY(${1 + settings.scaleY*volume}) 
         scaleX(${clamp(settings.scaleX*volume, settings.scaleXMin, 5)}) 
       `;
@@ -133,12 +133,8 @@ try {
     }
     // TODO: fix a data leak i think
   }
-
-  init();
-
   function livelyAudioListener(audioArray) {
-    dataArray = audioArray;
-
+    dataArray = audioArray; //TODO: make it smoother (transition speed but builtin)
     update();
   }
 
@@ -147,23 +143,16 @@ try {
     let obj = JSON.parse(data);
     //when no track is playing its null
     if (obj != null) {
-      
-      
-
-      if (obj.Thumbnail != null) {
-        
-      } else {
-        
-      }
-    } else {
-
-    }
+      if (obj.Thumbnail != null) {} else {}
+    } else {}
   }
 
   function livelyWallpaperPlaybackChanged(data) {
     var obj = JSON.parse(data);
     isPaused = obj.IsPaused;
   }
+
+  init();
 } catch (e) {
     trackContainer.innerText = e;
 }

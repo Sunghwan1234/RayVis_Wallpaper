@@ -1,7 +1,7 @@
 {
   "blur": {
     "min": 0,
-    "max": 10,
+    "max": 25,
     "step": 1,
     "text": "Blur",
     "help": "Higher values make it blurrier",
@@ -10,7 +10,7 @@
   },
   "indexMultiplier": {
     "min": 0,
-    "max": 5,
+    "max": 20,
     "step": 0.01,
     "text": "Index Multiplier",
     "help": "Higher values make it bigger",
@@ -19,7 +19,7 @@
   },
   "tanInner": {
     "min": 0.01,
-    "max": 2.00,
+    "max": 3.00,
     "step": 0.01,
     "text": "tanInner",
     "help": "Inside of tan(x)",
@@ -99,17 +99,17 @@
     "value": 0.10
   },
   "scaleY": {
-    "min": 0.01,
-    "max": 5.0,
-    "step": 0.01,
+    "min": 0.010,
+    "max": 2.000,
+    "step": 0.001,
     "text": "Y Scaling",
     "help": "mess around with it",
     "type": "slider",
-    "value": 0.10
+    "value": 0.010
   },
   "transition": {
     "min": 0,
-    "max": 1,
+    "max": 5,
     "step": 0.05,
     "text": "Transition Speed",
     "help": "How fast the bars transition",
