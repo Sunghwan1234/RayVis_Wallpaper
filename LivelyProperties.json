@@ -44,9 +44,27 @@
     "type": "slider",
     "value": 200
   },
+  "averageAddition": {
+    "min": 0.1,
+    "max": 10,
+    "step": 0.1,
+    "text": "Average Addition",
+    "help": "volume*=1+avMult/(average+this)",
+    "type": "slider",
+    "value": 1
+  },
+  "averageMultiplier": {
+    "min": 0,
+    "max": 20,
+    "step": 0.1,
+    "text": "Average Multiplier",
+    "help": "volume*=1+this/(average+avAdd)",
+    "type": "slider",
+    "value": 1
+  },
   "despawnVolume": {
     "min": 0,
-    "max": 10,
+    "max": 25,
     "step": 1,
     "text": "despawnVolume",
     "help": "What Volume to despawn (up for performance)",
@@ -70,6 +88,15 @@
     "help": "125 if unsure",
     "type": "slider",
     "value": 125
+  },
+  "heightMultiplier": {
+    "min": 0.1,
+    "max": 10,
+    "step": 0.05,
+    "text": "Height Multiplier",
+    "help": "1 if unsure",
+    "type": "slider",
+    "value": 1
   },
   "heightMax": {
     "min": 0,

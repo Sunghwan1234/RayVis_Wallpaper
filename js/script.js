@@ -3,9 +3,9 @@ const box = document.querySelector('.box');
 const trackContainer = document.querySelector('.track-info');
 
 try {
-  let dataArray;
+  let audio;
   let bufferLength = 128;
-  let elementLength = bufferLength*2;
+  let elementLength = bufferLength;
   let elements = [];
 
   let settings = {
@@ -14,6 +14,8 @@ try {
       tanInner: 0,
       tanOuter: 0,
       maxVolume: 300,
+      averageAddition: 1,
+      averageMultiplier: 1,
       despawnVolume: 0,
       volumeColorMultiplier: 5,
       heightStart: 125,
@@ -28,7 +30,7 @@ try {
   let settings_prev = settings;
   
 
-  async function init() {
+  function init() {
     for(let i = 0; i < (bufferLength); i++) {
         const element = document.createElement('span');
         element.classList.add('element');
@@ -78,63 +80,64 @@ try {
       if (settings_prev.blur != settings.blur) {
         box.style.filter = `blur(${settings.blur}px) contrast(10);`
       }
-
       // setTimeout(function () {
       //   requestAnimationFrame(update);
       // }, 1000 / settings.fps);
       //trackContainer.innerText = dataArray.length;
-      bufferLength = dataArray.length;
+      bufferLength = audio.length;
       elementLength = elements.length;
-      
+
+      let average = 0;
+      for (let v in audio) {average+=v;}
+      average/=bufferLength;
+
       for (let i = 0; i < bufferLength; i++) {
-        itemActions(i, dataArray[i]);
-        //itemActions(elements.length-i, dataArray[i]);
+        itemActions(i, average);
       }
       settings_prev = settings;
   };
 
-  async function itemActions(item, volume) {
-    let svolume=volume;
+  async function itemActions(index, average) {
+    let item = elements[index];
+    let volume = audio[index];
 
-    if (volume < 130) {
-        //volume*=0.4;
+    if (volume < 130) {//volume*=0.4;
     }
-    if (volume > 2000) {
-        volume *= 0.05;
-    }
-    if (volume > 3000) {
-        volume *= 0.5;
-    }
-    volume *= 1+(settings.indexMultiplier*item/bufferLength);
+    if (volume > 2000) {volume *= 0.05;}
+    if (volume > 3000) {volume *= 0.05;}
+
+    volume *= 1+(settings.indexMultiplier*index/bufferLength);
+
+    volume *= 1+settings.averageMultiplier/(average+settings.averageAddition);
+
     volume = settings.tanOuter*Math.tan(settings.tanInner*volume);
     volume = clamp(volume,0,settings.maxVolume);
-
     // if (item==0) {
     //   Math.floor(svolume*100)/100+" : "+Math.floor(volume*100)/100;
     // }
-
     if (volume >= settings.despawnVolume) {
-      elements[item].style.background = `
-        hsl(${Math.floor(settings.volumeColorMultiplier*volume+(255/bufferLength)*item)},40%,40%)`;
-      elements[item].style.transform = `
-        rotateZ(${item * ((360/elementLength))}deg) 
+      item.style.background = `
+        hsl(${Math.floor(settings.volumeColorMultiplier*volume+(255/bufferLength)*index)},40%,40%)`;
+      item.style.transform = `
+        rotateZ(${index * ((360/elementLength))}deg) 
         translate(-50%, ${clamp(settings.heightMultiplier*volume + settings.heightStart,0,settings.heightMax)}px) 
         scaleY(${1 + settings.scaleY*volume}) 
         scaleX(${clamp(settings.scaleX*volume, settings.scaleXMin, 5)}) 
       `;
 
       if (settings_prev.transition != settings.transition) {
-        elements[item].style.transition = settings.transition+"s";
+        item.style.transition = settings.transition+"s";
       }
-
-      elements[item].style.visibility="visible";
+      item.style.visibility="visible";
     } else {
-      elements[item].style.visibility="hidden";
+      if (item.style.visibility != "hidden") {
+        item.style.visibility="hidden";
+      }
     }
     // TODO: fix a data leak i think
   }
   function livelyAudioListener(audioArray) {
-    dataArray = audioArray; //TODO: make it smoother (transition speed but builtin)
+    audio = audioArray; //TODO: make it smoother (transition speed but builtin)
     update();
   }
 
