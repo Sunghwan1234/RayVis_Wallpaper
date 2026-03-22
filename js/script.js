@@ -1,6 +1,6 @@
-const visualizer = document.querySelector('.visualizer');
-const box = document.querySelector('.box');
-const trackContainer = document.querySelector('.track-info');
+let visualizer = document.querySelector('.visualizer');
+let box = document.querySelector('.box');
+let trackContainer = document.querySelector('.track-info');
 
 try {
   let audio;
@@ -12,11 +12,11 @@ try {
       blur: 2,
       visualizerSize: 300,
       indexMultiplier: 0,
+      averageAddition: 1,
+      averageMultiplier: 1,
       tanInner: 0,
       tanOuter: 0,
       maxVolume: 300,
-      averageAddition: 1,
-      averageMultiplier: 1,
       despawnVolume: 0,
       volumeColorMultiplier: 5,
       heightStart: 125,
@@ -56,12 +56,12 @@ try {
 
       case "indexMultiplier": settings.indexMultiplier = val; break;
 
+      case "averageAddition": settings.averageAddition = val; break;
+      case "averageMultiplier": settings.averageMultiplier = val; break;
+
       case "tanInner": settings.tanInner = val; break;
       case "tanOuter": settings.tanOuter = val; break;
       case "maxVolume": settings.maxVolume = val; break;
-
-      case "averageAddition": settings.averageAddition = val; break;
-      case "averageMultiplier": settings.averageMultiplier = val; break;
 
       case "despawnVolume": settings.despawnVolume = val; break;
 

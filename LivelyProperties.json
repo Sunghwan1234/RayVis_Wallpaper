@@ -26,6 +26,24 @@
     "type": "slider",
     "value": 15
   },
+  "averageAddition": {
+    "min": 0.01,
+    "max": 10,
+    "step": 0.01,
+    "text": "Average Addition",
+    "help": "volume*=1+avMult/(average+this)",
+    "type": "slider",
+    "value": 1
+  },
+  "averageMultiplier": {
+    "min": 0,
+    "max": 200,
+    "step": 1,
+    "text": "Average Multiplier",
+    "help": "volume*=1+this/(average+avAdd)",
+    "type": "slider",
+    "value": 50
+  },
   "tanInner": {
     "min": 0.01,
     "max": 3.00,
@@ -46,30 +64,12 @@
   },
   "maxVolume": {
     "min": 0,
-    "max": 500,
-    "step": 0.1,
+    "max": 5000,
+    "step": 10,
     "text": "Maximum Volume",
     "help": "Highest volume can reach",
     "type": "slider",
-    "value": 200
-  },
-  "averageAddition": {
-    "min": 0.1,
-    "max": 10,
-    "step": 0.1,
-    "text": "Average Addition",
-    "help": "volume*=1+avMult/(average+this)",
-    "type": "slider",
-    "value": 1
-  },
-  "averageMultiplier": {
-    "min": 0,
-    "max": 200,
-    "step": 1,
-    "text": "Average Multiplier",
-    "help": "volume*=1+this/(average+avAdd)",
-    "type": "slider",
-    "value": 50
+    "value": 1000
   },
   "despawnVolume": {
     "min": 0,
