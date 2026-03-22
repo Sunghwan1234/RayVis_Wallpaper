@@ -58,6 +58,9 @@ try {
       case "tanOuter": settings.tanOuter = val; break;
       case "maxVolume": settings.maxVolume = val; break;
 
+      case "averageAddition": settings.averageAddition = val; break;
+      case "averageMultiplier": settings.averageMultiplier = val; break;
+
       case "despawnVolume": settings.despawnVolume = val; break;
 
       case "volumeColorMultiplier": settings.volumeColorMultiplier = val; break;
