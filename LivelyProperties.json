@@ -8,9 +8,18 @@
     "type": "slider",
     "value": 2
   },
+  "visualizerSize": {
+    "min": 100,
+    "max": 500,
+    "step": 10,
+    "text": "Circle Size",
+    "help": "the white circle. 300 Default",
+    "type": "slider",
+    "value": 300
+  },
   "indexMultiplier": {
     "min": 0,
-    "max": 20,
+    "max": 50,
     "step": 0.01,
     "text": "Index Multiplier",
     "help": "Higher values make it bigger",
@@ -28,8 +37,8 @@
   },
   "tanOuter": {
     "min": 0,
-    "max": 100,
-    "step": 0.01,
+    "max": 200,
+    "step": 0.1,
     "text": "Volume Multiplier",
     "help": "Multiplies after tan(x)",
     "type": "slider",
@@ -38,7 +47,7 @@
   "maxVolume": {
     "min": 0,
     "max": 500,
-    "step": 0.01,
+    "step": 0.1,
     "text": "Maximum Volume",
     "help": "Highest volume can reach",
     "type": "slider",
@@ -55,7 +64,7 @@
   },
   "averageMultiplier": {
     "min": 0,
-    "max": 100,
+    "max": 200,
     "step": 1,
     "text": "Average Multiplier",
     "help": "volume*=1+this/(average+avAdd)",
@@ -71,10 +80,14 @@
     "type": "slider",
     "value": 0
   },
+  "label1": {
+    "type": "label",
+    "value": "Visuals"
+  },
   "volumeColorMultiplier": {
     "min": 0,
     "max": 10,
-    "step": 0.1,
+    "step": 0.01,
     "text": "Volume Color Multiplier",
     "help": "Color changes with volume",
     "type": "slider",

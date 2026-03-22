@@ -10,6 +10,7 @@ try {
 
   let settings = {
       blur: 2,
+      visualizerSize: 300,
       indexMultiplier: 0,
       tanInner: 0,
       tanOuter: 0,
@@ -51,6 +52,7 @@ try {
   function livelyPropertyListener(name, val) {
     switch (name) {
       case "blur": settings.blur = val; break;
+      case "visualizerSize": settings.visualizerSize = val; break;
 
       case "indexMultiplier": settings.indexMultiplier = val; break;
 
@@ -82,6 +84,10 @@ try {
   const update = () => {
       if (settings_prev.blur != settings.blur) {
         box.style.filter = `blur(${settings.blur}px) contrast(10);`
+      }
+      if (settings_prev.visualizerSize != settings.visualizerSize) {
+        visualizer.style.width = settings.visualizerSize+"px";
+        visualizer.style.height = settings.visualizerSize+"px";
       }
       // setTimeout(function () {
       //   requestAnimationFrame(update);
