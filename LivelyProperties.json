@@ -15,7 +15,7 @@
     "text": "Index Multiplier",
     "help": "Higher values make it bigger",
     "type": "slider",
-    "value": 3
+    "value": 15
   },
   "tanInner": {
     "min": 0.01,
@@ -24,23 +24,23 @@
     "text": "tanInner",
     "help": "Inside of tan(x)",
     "type": "slider",
-    "value": 0.4
+    "value": 1.5
   },
   "tanOuter": {
     "min": 0,
     "max": 100,
     "step": 0.01,
     "text": "Volume Multiplier",
-    "help": "Default 40",
+    "help": "Multiplies after tan(x)",
     "type": "slider",
-    "value": 40
+    "value": 50
   },
   "maxVolume": {
     "min": 0,
     "max": 500,
     "step": 0.01,
     "text": "Maximum Volume",
-    "help": "Also controls the maximum height of the bars",
+    "help": "Highest volume can reach",
     "type": "slider",
     "value": 200
   },
@@ -55,12 +55,12 @@
   },
   "averageMultiplier": {
     "min": 0,
-    "max": 50,
-    "step": 0.1,
+    "max": 100,
+    "step": 1,
     "text": "Average Multiplier",
     "help": "volume*=1+this/(average+avAdd)",
     "type": "slider",
-    "value": 1
+    "value": 50
   },
   "despawnVolume": {
     "min": 0,
@@ -76,9 +76,9 @@
     "max": 10,
     "step": 0.1,
     "text": "Volume Color Multiplier",
-    "help": "Higher values make is more color-changing",
+    "help": "Color changes with volume",
     "type": "slider",
-    "value": 5
+    "value": 0.1
   },
   "heightStart": {
     "min": 0,
@@ -105,16 +105,16 @@
     "text": "Maximum Height",
     "help": "",
     "type": "slider",
-    "value": 500
+    "value": 200
   },
   "scaleX": {
     "min": 0.001,
-    "max": 0.100,
+    "max": 0.050,
     "step": 0.001,
     "text": "X Scaling",
     "help": "Default 0.005",
     "type": "slider",
-    "value": 0.005
+    "value": 0.003
   },
   "scaleXMin": {
     "min": 0.01,
@@ -127,12 +127,12 @@
   },
   "scaleY": {
     "min": 0.010,
-    "max": 2.000,
+    "max": 1.000,
     "step": 0.001,
     "text": "Y Scaling",
     "help": "mess around with it",
     "type": "slider",
-    "value": 0.010
+    "value": 0.020
   },
   "transition": {
     "min": 0,
@@ -146,7 +146,7 @@
   "fpsLock": {
     "type": "checkbox",
     "value": false,
-    "help": "Improves performance",
+    "help": "Improves performance (Not Implemented)",
     "text": "30FPS Lock"
   }
 }
