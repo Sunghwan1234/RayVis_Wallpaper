@@ -3,23 +3,28 @@ let box = document.querySelector('.box');
 let trackContainer = document.querySelector('.track-info');
 
 try {
-  let audio;
+  let audio = [];
   let bufferLength = 128;
   let elementLength = bufferLength;
   let elements = [];
+  let audioReady = false;
 
   let settings = {
       blur: 2,
       visualizerSize: 300,
-      indexMultiplier: 0,
-      averageAddition: 1,
-      averageMultiplier: 1,
-      tanInner: 0,
-      tanOuter: 0,
+      averageAddMult: 0,
+      indexMult: 0,
+      doAverageMult: false,
+      averageMultAddition: 1,
+      averageMult: 1,
+      doTan: true,
+      tanMult: 0,
+      tanX: 0,
+      volumeMultiplier: 1,
       maxVolume: 300,
       despawnVolume: 0,
-      volumeColorMultiplier: 5,
-      heightStart: 125,
+      volumeColorMult: 5,
+      heightMin: 125,
       heightMultiplier: 1,
       heightMax: 0,
       scaleX: 1,
@@ -29,7 +34,6 @@ try {
       fps: 60
   };
   let settings_prev = settings;
-  
 
   function init() {
     for(let i = 0; i < (bufferLength); i++) {
@@ -38,130 +42,132 @@ try {
         elements.push(element);
         visualizer.appendChild(element);
     }
-
     trackContainer.innerText = "";
+    animate();
   }
-
   const clamp = (num, min, max) => {
-      if(num >= max) return max;
-      if(num <= min) return min;
-      return num;
+      if(num >= max) return max; if(num <= min) return min; return num;
   }
 
   /** Settings are changed in lively */
   function livelyPropertyListener(name, val) {
     switch (name) {
-      case "blur": settings.blur = val; break;
-      case "visualizerSize": settings.visualizerSize = val; break;
+      case "blur":
+        settings.blur = val;
+        box.style.filter = `blur(${settings.blur}px) contrast(10);`
+        break;
+      case "visualizerSize":
+        settings.visualizerSize = val;
+        visualizer.style.width = settings.visualizerSize+"px";
+        visualizer.style.height = settings.visualizerSize+"px";
+        break;
+      case "averageAddMult": settings.averageAddMult = val; break;
 
-      case "indexMultiplier": settings.indexMultiplier = val; break;
+      case "indexMultiplier": settings.indexMult = val; break;
 
-      case "averageAddition": settings.averageAddition = val; break;
-      case "averageMultiplier": settings.averageMultiplier = val; break;
-
-      case "tanInner": settings.tanInner = val; break;
-      case "tanOuter": settings.tanOuter = val; break;
+      case "doAverageMult": settings.doAverageMult = val; break;
+        case "averageMultAddition": settings.averageMultAddition = val; break;
+        case "averageMult": settings.averageMult = val; break;
+      case "doTan": settings.doTan = val; break;
+        case "tanMultiplier": settings.tanMult = val; break;
+        case "tanX": settings.tanX = val; break;
+      case "volumeMultiplier": settings.volumeMultiplier = val; break;
       case "maxVolume": settings.maxVolume = val; break;
 
       case "despawnVolume": settings.despawnVolume = val; break;
 
-      case "volumeColorMultiplier": settings.volumeColorMultiplier = val; break;
+      case "volumeColorMult": settings.volumeColorMult = val; break;
       
-      case "heightStart": settings.heightStart = val; break;
-      case "heightMultiplier": settings.heightMultiplier = val; break;
+      case "heightMin": settings.heightMin = val; break;
       case "heightMax": settings.heightMax = val; break;
+      case "heightMultiplier": settings.heightMultiplier = val; break;
 
       case "scaleX": settings.scaleX = val; break;
       case "scaleXMin": settings.scaleXMin = val; break;
       case "scaleY": settings.scaleY = val; break;
       
-      case "transition": settings.transition = val; break;
+      case "transition":
+        settings.transition = val;
+        for (let item of elements) {
+          item.style.transition = val + "s";
+        }
+        break;
 
       case "fpsLock": settings.fps = val ? 30 : 60; break;
     }
   }
 
+  function animate() {
+    requestAnimationFrame(animate);
+    if (audioReady) {update();}
+  }
+
   const update = () => {
-      if (settings_prev.blur != settings.blur) {
-        box.style.filter = `blur(${settings.blur}px) contrast(10);`
-      }
-      if (settings_prev.visualizerSize != settings.visualizerSize) {
-        visualizer.style.width = settings.visualizerSize+"px";
-        visualizer.style.height = settings.visualizerSize+"px";
-      }
-      // setTimeout(function () {
-      //   requestAnimationFrame(update);
-      // }, 1000 / settings.fps);
       //trackContainer.innerText = dataArray.length;
-      bufferLength = audio.length;
-      elementLength = elements.length;
-
       let average = 0;
-      for (let v in audio) {average+=v;}
-      average/=bufferLength;
+      for (let i = 0; i < audio.length; i++) {
+        average += audio[i];
+      }
+      average /= audio.length;
 
-      for (let i = 0; i < bufferLength; i++) {
+      for (let i = 0; i < elements.length; i++) {
         itemActions(i, average);
       }
-      settings_prev = settings;
   };
 
-  async function itemActions(index, average) {
+  function itemActions(index, average) {
     let item = elements[index];
     let volume = audio[index];
+    let s = settings;
 
-    if (volume < 130) {//volume*=0.4;
+    //if (volume < 130) {volume*=0.4;}
+    if (volume > 2000) {volume *= 0.1;}
+    if (volume > 2000) {volume *= 0.1;}
+
+    volume += s.averageAddMult/average;
+
+    volume *= 1+(s.indexMult*index/bufferLength);
+
+    if (s.doAverageMult) {volume *= 
+      1+(s.averageMult/(average+s.averageMultAddition));}
+    if (s.doTan) {volume = s.maxVolume*((Math.PI/2)+
+      Math.atan(s.tanMult*volume+s.tanX));
+    } else {
+      volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
     }
-    if (volume > 2000) {volume *= 0.05;}
-    if (volume > 3000) {volume *= 0.05;}
-
-    volume *= 1+(settings.indexMultiplier*index/bufferLength);
-
-    volume *= 1+settings.averageMultiplier/(average+settings.averageAddition);
-
-    volume = settings.tanOuter*Math.tan(settings.tanInner*volume);
-    volume = clamp(volume,0,settings.maxVolume);
-    // if (item==0) {
-    //   Math.floor(svolume*100)/100+" : "+Math.floor(volume*100)/100;
-    // }
-    if (volume >= settings.despawnVolume) {
+    if (volume >= s.despawnVolume) {
       item.style.background = `
-        hsl(${Math.floor(settings.volumeColorMultiplier*volume+(255/bufferLength)*index)},40%,40%)`;
+        hsl(${Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index)},40%,40%)`;
       item.style.transform = `
         rotateZ(${index * ((360/elementLength))}deg) 
-        translate(-50%, ${clamp(settings.heightMultiplier*volume + settings.heightStart,0,settings.heightMax)}px) 
-        scaleY(${1 + settings.scaleY*volume}) 
-        scaleX(${clamp(settings.scaleX*volume, settings.scaleXMin, 5)}) 
+        translate(-50%, ${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)}px) 
+        scaleY(${1 + s.scaleY*volume}) 
+        scaleX(${clamp(s.scaleX*volume, s.scaleXMin, 5)}) 
       `;
 
-      if (settings_prev.transition != settings.transition) {
-        item.style.transition = settings.transition+"s";
-      }
-      item.style.visibility="visible";
+      if (item.style.visibility != "visible") {item.style.visibility="visible";}
     } else {
-      if (item.style.visibility != "hidden") {
-        item.style.visibility="hidden";
-      }
+      if (item.style.visibility != "hidden") {item.style.visibility="hidden";}
     }
-    // TODO: fix a data leak i think
   }
+
   function livelyAudioListener(audioArray) {
-    audio = audioArray; //TODO: make it smoother (transition speed but builtin)
-    update();
+    audio = audioArray;
+    audioReady = true;
   }
 
   /**  */
   async function livelyCurrentTrack(data) {
-    let obj = JSON.parse(data);
-    //when no track is playing its null
-    if (obj != null) {
-      if (obj.Thumbnail != null) {} else {}
-    } else {}
+    // let obj = JSON.parse(data);
+    // //when no track is playing its null
+    // if (obj != null) {
+    //   if (obj.Thumbnail != null) {} else {}
+    // } else {}
   }
 
   function livelyWallpaperPlaybackChanged(data) {
-    var obj = JSON.parse(data);
-    isPaused = obj.IsPaused;
+    // var obj = JSON.parse(data);
+    // isPaused = obj.IsPaused;
   }
 
   init();

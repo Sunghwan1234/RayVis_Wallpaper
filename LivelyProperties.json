@@ -17,48 +17,69 @@
     "type": "slider",
     "value": 300
   },
+  "averageAddMult": {
+    "min": 0,
+    "max": 1000,
+    "step": 1,
+    "text": "Average Addition Multiplier",
+    "help": "volume+=this/average",
+    "type": "slider",
+    "value": 0
+  },
   "indexMultiplier": {
     "min": 0,
     "max": 50,
-    "step": 0.01,
+    "step": 1,
     "text": "Index Multiplier",
-    "help": "Higher values make it bigger",
+    "help": "Makes the left bigger",
     "type": "slider",
     "value": 15
   },
-  "averageAddition": {
-    "min": 0.01,
-    "max": 10,
-    "step": 0.01,
-    "text": "Average Addition",
+  "doAverageMult": {
+    "type": "checkbox",
+    "value": true,
+    "help": "volume *= 1+avMult/(average+avAdd)",
+    "text": "Average Multiplier"
+  },
+  "averageMultAddition": {
+    "min": 0.1,
+    "max": 100,
+    "step": 0.1,
+    "text": "Average Multiplier Addition",
     "help": "volume*=1+avMult/(average+this)",
     "type": "slider",
     "value": 1
   },
-  "averageMultiplier": {
+  "averageMult": {
     "min": 0,
-    "max": 200,
-    "step": 1,
+    "max": 10,
+    "step": 0.1,
     "text": "Average Multiplier",
     "help": "volume*=1+this/(average+avAdd)",
     "type": "slider",
     "value": 50
   },
-  "tanInner": {
+  "doTan": {
+    "type": "checkbox",
+    "value": false,
+    "help": "volume = maxVolume*(PI/2+atan(tanMult*volume+tanX))",
+    "text": "Uses inverse tan function for volume."
+  },
+  "tanMult": {
     "min": 0.01,
-    "max": 3.00,
+    "max": 10.00,
     "step": 0.01,
-    "text": "tanInner",
-    "help": "Inside of tan(x)",
+    "text": "tan Multiplier",
+    "help": "atan(THIS*volume+tanX)",
     "type": "slider",
     "value": 1.5
   },
-  "tanOuter": {
+  "tanX": {
     "min": 0,
     "max": 200,
-    "step": 0.1,
-    "text": "Volume Multiplier",
-    "help": "Multiplies after tan(x)",
+    "step": 1,
+    "text": "tanX",
+    "help": "atan(tanMult*volume+THIS)",
     "type": "slider",
     "value": 50
   },
@@ -67,24 +88,24 @@
     "max": 5000,
     "step": 10,
     "text": "Maximum Volume",
-    "help": "Highest volume can reach",
+    "help": "Highest Volume",
     "type": "slider",
     "value": 1000
   },
   "despawnVolume": {
     "min": 0,
-    "max": 25,
-    "step": 1,
+    "max": 100,
+    "step": 5,
     "text": "despawnVolume",
     "help": "What Volume to despawn (up for performance)",
     "type": "slider",
     "value": 0
   },
-  "label1": {
+  "labelVisuals": {
     "type": "label",
     "value": "Visuals"
   },
-  "volumeColorMultiplier": {
+  "volumeColorMult": {
     "min": 0,
     "max": 10,
     "step": 0.01,
@@ -93,23 +114,14 @@
     "type": "slider",
     "value": 0.1
   },
-  "heightStart": {
+  "heightMin": {
     "min": 0,
-    "max": 300,
+    "max": 500,
     "step": 1,
-    "text": "Starting Height",
+    "text": "Minimum Height",
     "help": "125 if unsure",
     "type": "slider",
     "value": 125
-  },
-  "heightMultiplier": {
-    "min": 0.1,
-    "max": 10,
-    "step": 0.05,
-    "text": "Height Multiplier",
-    "help": "1 if unsure",
-    "type": "slider",
-    "value": 1
   },
   "heightMax": {
     "min": 0,
@@ -119,6 +131,15 @@
     "help": "",
     "type": "slider",
     "value": 200
+  },
+  "heightMultiplier": {
+    "min": 0.01,
+    "max": 5,
+    "step": 0.01,
+    "text": "Height Multiplier",
+    "help": "1 if unsure",
+    "type": "slider",
+    "value": 1
   },
   "scaleX": {
     "min": 0.001,
@@ -139,7 +160,7 @@
     "value": 0.10
   },
   "scaleY": {
-    "min": 0.010,
+    "min": 0.001,
     "max": 1.000,
     "step": 0.001,
     "text": "Y Scaling",
@@ -149,8 +170,8 @@
   },
   "transition": {
     "min": 0,
-    "max": 5,
-    "step": 0.05,
+    "max": 1,
+    "step": 0.01,
     "text": "Transition Speed",
     "help": "How fast the bars transition",
     "type": "slider",
