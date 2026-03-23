@@ -1,11 +1,3 @@
-Deform - square tunnel
-The MIT License
-Copyright © 2013 Inigo Quilez
-https://www.shadertoy.com/view/Ms2SWW
-
-Purple and Blue Light Digital Wallpaper
-https://www.pexels.com/photo/purple-and-blue-light-digital-wallpaper-3780104/
-
-thumbnail from Music Tunnel by Rocksdanister
+by Sunghwan1234
 
 Basic audio visualizer from lopiacode https://github.com/lopiacode/audio-visualizer

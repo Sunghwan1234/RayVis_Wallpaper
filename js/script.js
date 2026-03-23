@@ -131,7 +131,7 @@ try {
     if (s.doAverageMult) {volume *= 
       1+(s.averageMult/(average+s.averageMultAddition));}
     if (s.doTan) {volume = s.maxVolume*((Math.PI/2)+
-      Math.atan(s.tanMult*volume+s.tanX));
+      Math.atan(s.tanMult*volume-s.tanX));
     } else {
       volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
     }

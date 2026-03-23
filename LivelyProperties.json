@@ -42,9 +42,9 @@
     "text": "Average Multiplier"
   },
   "averageMultAddition": {
-    "min": 0.1,
-    "max": 100,
-    "step": 0.1,
+    "min": 0.01,
+    "max": 10,
+    "step": 0.01,
     "text": "Average Multiplier Addition",
     "help": "volume*=1+avMult/(average+this)",
     "type": "slider",
@@ -63,7 +63,7 @@
     "type": "checkbox",
     "value": false,
     "help": "volume = maxVolume*(PI/2+atan(tanMult*volume+tanX))",
-    "text": "Uses inverse tan function for volume."
+    "text": "Use Inverse Tan"
   },
   "tanMult": {
     "min": 0.01,
@@ -92,10 +92,19 @@
     "type": "slider",
     "value": 1000
   },
+  "volumeMultiplier": {
+    "min": 0,
+    "max": 1000,
+    "step": 1,
+    "text": "Volume Multiplier",
+    "help": "Disabled if using atan",
+    "type": "slider",
+    "value": 10
+  },
   "despawnVolume": {
     "min": 0,
-    "max": 100,
-    "step": 5,
+    "max": 50,
+    "step": 1,
     "text": "despawnVolume",
     "help": "What Volume to despawn (up for performance)",
     "type": "slider",
