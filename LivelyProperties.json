@@ -199,6 +199,24 @@
     "type": "label",
     "value": "Envirounment"
   },
+  "baseLocation": {
+    "min": 0,
+    "max": 1,
+    "step": 0.01,
+    "text": "Base Location",
+    "help": "Where shake should be calculated from",
+    "type": "slider",
+    "value": 0.2
+  },
+  "shakeMultiplier": {
+    "min": 0,
+    "max": 10,
+    "step": 0.1,
+    "text": "Shake Multiplier",
+    "help": "make em shake",
+    "type": "slider",
+    "value": 0
+  },
   "fpsLock": {
     "type": "checkbox",
     "value": false,
