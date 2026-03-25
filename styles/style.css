@@ -56,7 +56,6 @@ html, body, .box {
     border-right: 20px solid transparent;
     border-left: 20px solid transparent;
     transform-origin: top center;
-    transition: .10s;
 
     background: hsl(0, 48%, 66%);
 }

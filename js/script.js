@@ -95,7 +95,7 @@ try {
       case "transition":
         settings.transition = val;
         for (let item of elements) {
-          item.style.transition = val + "s";
+          item.style.transition = `${val}s`;
         }
         break;
       case "baseLocation": settings.baseLocation = val; break;
@@ -118,6 +118,7 @@ try {
         if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
           shakeX = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
           shakeY = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
+          visualizer.style.transform = `rotateZ(180deg) translate3d(${shakeX}px, ${shakeY}px, 0)`
         }
       }
       average /= audio.length;
@@ -130,11 +131,7 @@ try {
   function itemActions(index) {
     let item = elements[index];
     let volume = audio[index];
-    const s = settings;
-
-    //if (volume < 130) {volume*=0.4;}
-    if (volume > 2000) {volume *= 0.1;}
-    if (volume > 2000) {volume *= 0.1;}
+    let s = settings;
 
     volume += s.averageAddMult/(average+s.averageAddShift);
 
@@ -150,16 +147,14 @@ try {
     if (volume >= s.despawnVolume) {
       if (settings.volumeColorMult!=0) {
         const color = Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index);
-        const newBackground = `hsl(${color},40%,40%)`;
+        let newBackground = `hsl(${color},40%,40%)`;
         if (item.style.background != newBackground) {item.style.background = newBackground;}
       }
-      const translateX = `calc(-50%+${shakeX}px)`;
-      const translateY = `${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)+shakeY}px`;
+      const translateY = clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax);
       item.style.transform = `
-        rotateZ(${index * (360/bufferLength)}deg)
-        translate3d(${translateX}}, ${translateY}px, 0)
-        scaleY(${1 + s.scaleY*volume}) 
-        scaleX(${clamp(s.scaleX*volume, s.scaleXMin, 5)}) 
+        rotateZ(${index * (360/bufferLength)}deg) 
+        translate(-50%, ${translateY}px) 
+        scale(${clamp(s.scaleX*volume, s.scaleXMin, 5)}, ${1 + s.scaleY*volume}) 
       `;
       if (item.style.visibility != "visible") {item.style.visibility="visible";}
     } else {

@@ -42,7 +42,7 @@
     "text": "Index Multiplier",
     "help": "Makes the left bigger",
     "type": "slider",
-    "value": 13
+    "value": 10
   },
   "doAverageMult": {
     "type": "checkbox",
@@ -57,7 +57,7 @@
     "text": "Average Multiplier Shift",
     "help": "Down for more accuracy",
     "type": "slider",
-    "value": 0.01
+    "value": 0.020
   },
   "averageMult": {
     "min": 0,
@@ -108,7 +108,7 @@
     "text": "Volume Multiplier",
     "help": "Disabled if using atan",
     "type": "slider",
-    "value": 10
+    "value": 15
   },
   "despawnVolume": {
     "min": 0,
@@ -157,7 +157,7 @@
     "text": "Height Multiplier",
     "help": "1 if unsure",
     "type": "slider",
-    "value": 1
+    "value": 0.1
   },
   "scaleX": {
     "min": 0.0005,
@@ -166,7 +166,7 @@
     "text": "X Scaling",
     "help": "Big",
     "type": "slider",
-    "value": 0.002
+    "value": 0.0015
   },
   "scaleXMin": {
     "min": 0.01,
@@ -193,7 +193,7 @@
     "text": "Transition Speed",
     "help": "How fast the bars transition",
     "type": "slider",
-    "value": 0.15
+    "value": 0.10
   },
   "labelEnv": {
     "type": "label",
@@ -202,7 +202,7 @@
   "baseLocation": {
     "min": 0,
     "max": 255,
-    "step": 1,
+    "step": 15,
     "text": "Base Location",
     "help": "Where shake should be calculated from",
     "type": "slider",
