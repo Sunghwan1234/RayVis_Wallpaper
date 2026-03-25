@@ -128,8 +128,8 @@ try {
   };
 
   function itemActions(index) {
-    const item = elements[index];
-    const volume = audio[index];
+    let item = elements[index];
+    let volume = audio[index];
     const s = settings;
 
     //if (volume < 130) {volume*=0.4;}
