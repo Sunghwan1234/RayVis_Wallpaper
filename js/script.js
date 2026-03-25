@@ -13,24 +13,27 @@ try {
       blur: 2,
       visualizerSize: 300,
       averageAddMult: 0,
+      averageAddShift: 1,
       indexMult: 0,
       doAverageMult: false,
-      averageMultAddition: 1,
-      averageMult: 1,
+        averageMultShift: 1,
+        averageMult: 1,
       doTan: true,
-      tanMult: 0,
-      tanX: 0,
+        tanMult: 0,
+        tanX: 0,
       volumeMultiplier: 1,
-      maxVolume: 300,
+        maxVolume: 300,
       despawnVolume: 0,
       volumeColorMult: 5,
       heightMin: 125,
-      heightMultiplier: 1,
       heightMax: 0,
+        heightMultiplier: 1,
       scaleX: 1,
-      scaleXMin: 0,
+        scaleXMin: 0,
       scaleY: 0.1,
       transition: 0.2,
+      baseLocation: 5,
+      shakeMultiplier: 1,
       fps: 60
   };
   let settings_prev = settings;
@@ -41,6 +44,9 @@ try {
         element.classList.add('element');
         elements.push(element);
         visualizer.appendChild(element);
+
+        element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
+        element.style.transform = `rotateZ(${i * (360/bufferLength)}deg)`;
     }
     trackContainer.innerText = "";
     animate();
@@ -62,11 +68,12 @@ try {
         visualizer.style.height = settings.visualizerSize+"px";
         break;
       case "averageAddMult": settings.averageAddMult = val; break;
+      case "averageAddShift": settings.averageAddShift = val; break;
 
       case "indexMultiplier": settings.indexMult = val; break;
 
       case "doAverageMult": settings.doAverageMult = val; break;
-        case "averageMultAddition": settings.averageMultAddition = val; break;
+        case "averageMultShift": settings.averageMultShift = val; break;
         case "averageMult": settings.averageMult = val; break;
       case "doTan": settings.doTan = val; break;
         case "tanMultiplier": settings.tanMult = val; break;
@@ -92,6 +99,8 @@ try {
           item.style.transition = val + "s";
         }
         break;
+      case "baseLocation": settings.baseLocation = val; break;
+      case "shakeMultiplier": settings.shakeMultiplier = val; break;
 
       case "fpsLock": settings.fps = val ? 30 : 60; break;
     }
@@ -101,21 +110,24 @@ try {
     requestAnimationFrame(animate);
     if (audioReady) {update();}
   }
-
+  let shake = 0;
+  let average = 0;
   const update = () => {
       //trackContainer.innerText = dataArray.length;
-      let average = 0;
       for (let i = 0; i < audio.length; i++) {
         average += audio[i];
+        if (i==s.baseLocation && s.shakeMultiplier!=0) {
+          shake = Math.random()*audio[i]*s.shakeMultiplier;
+        }
       }
       average /= audio.length;
 
       for (let i = 0; i < elements.length; i++) {
-        itemActions(i, average);
+        itemActions(i);
       }
   };
 
-  function itemActions(index, average) {
+  function itemActions(index) {
     let item = elements[index];
     let volume = audio[index];
     let s = settings;
@@ -124,26 +136,32 @@ try {
     if (volume > 2000) {volume *= 0.1;}
     if (volume > 2000) {volume *= 0.1;}
 
-    volume += s.averageAddMult/average;
+    volume += s.averageAddMult/(average+s.averageAddShift);
 
     volume *= 1+(s.indexMult*index/bufferLength);
 
     if (s.doAverageMult) {volume *= 
-      1+(s.averageMult/(average+s.averageMultAddition));}
+      1+(s.averageMult/(average+s.averageMultShift));}
     if (s.doTan) {volume = s.maxVolume*((Math.PI/2)+
       Math.atan(s.tanMult*volume-s.tanX));
     } else {
       volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
     }
     if (volume >= s.despawnVolume) {
-      item.style.background = `
-        hsl(${Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index)},40%,40%)`;
+      if (settings.volumeColorMult!=0) {
+        let newBackground = `hsl(${Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index)},40%,40%)`
+        if (item.style.background != newBackground) {item.style.background = newBackground;}
+      }
       item.style.transform = `
-        rotateZ(${index * ((360/elementLength))}deg) 
         translate(-50%, ${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)}px) 
         scaleY(${1 + s.scaleY*volume}) 
         scaleX(${clamp(s.scaleX*volume, s.scaleXMin, 5)}) 
       `;
+
+      if (shake>0) {
+        item.style.top = 50+shake+"%";
+        item.style.left = 44+shake+"%";
+      }
 
       if (item.style.visibility != "visible") {item.style.visibility="visible";}
     } else {

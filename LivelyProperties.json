@@ -19,10 +19,19 @@
   },
   "averageAddMult": {
     "min": 0,
-    "max": 1000,
+    "max": 100,
     "step": 1,
     "text": "Average Addition Multiplier",
-    "help": "volume+=this/average",
+    "help": "volume+=this/(average+avAddShift)",
+    "type": "slider",
+    "value": 0
+  },
+  "averageAddShift": {
+    "min": 0,
+    "max": 10,
+    "step": 0.01,
+    "text": "Average Addition Shift",
+    "help": "volume+=avAddMult/(average+this)",
     "type": "slider",
     "value": 0
   },
@@ -38,26 +47,26 @@
   "doAverageMult": {
     "type": "checkbox",
     "value": true,
-    "help": "volume *= 1+avMult/(average+avAdd)",
+    "help": "volume *= 1+avMult/(average+avMultShift)",
     "text": "Average Multiplier"
   },
-  "averageMultAddition": {
+  "averageMultShift": {
     "min": 0.01,
-    "max": 10,
-    "step": 0.01,
-    "text": "Average Multiplier Addition",
-    "help": "volume*=1+avMult/(average+this)",
+    "max": 1,
+    "step": 0.005,
+    "text": "Average Multiplier Shift",
+    "help": "Down for more accuracy",
     "type": "slider",
-    "value": 1
+    "value": 0.01
   },
   "averageMult": {
     "min": 0,
-    "max": 10,
+    "max": 100,
     "step": 0.1,
     "text": "Average Multiplier",
-    "help": "volume*=1+this/(average+avAdd)",
+    "help": "Multiplier for averager",
     "type": "slider",
-    "value": 50
+    "value": 1.6
   },
   "doTan": {
     "type": "checkbox",
@@ -103,7 +112,7 @@
   },
   "despawnVolume": {
     "min": 0,
-    "max": 50,
+    "max": 100,
     "step": 1,
     "text": "despawnVolume",
     "help": "What Volume to despawn (up for performance)",
@@ -185,6 +194,10 @@
     "help": "How fast the bars transition",
     "type": "slider",
     "value": 0.2
+  },
+  "labelEnv": {
+    "type": "label",
+    "value": "Envirounment"
   },
   "fpsLock": {
     "type": "checkbox",
