@@ -42,7 +42,7 @@
     "text": "Index Multiplier",
     "help": "Makes the left bigger",
     "type": "slider",
-    "value": 15
+    "value": 13
   },
   "doAverageMult": {
     "type": "checkbox",
@@ -160,13 +160,13 @@
     "value": 1
   },
   "scaleX": {
-    "min": 0.001,
-    "max": 0.050,
-    "step": 0.001,
+    "min": 0.0005,
+    "max": 0.0100,
+    "step": 0.0005,
     "text": "X Scaling",
-    "help": "Default 0.005",
+    "help": "Big",
     "type": "slider",
-    "value": 0.003
+    "value": 0.002
   },
   "scaleXMin": {
     "min": 0.01,
@@ -179,7 +179,7 @@
   },
   "scaleY": {
     "min": 0.001,
-    "max": 1.000,
+    "max": 0.050,
     "step": 0.001,
     "text": "Y Scaling",
     "help": "mess around with it",
@@ -193,7 +193,7 @@
     "text": "Transition Speed",
     "help": "How fast the bars transition",
     "type": "slider",
-    "value": 0.2
+    "value": 0.15
   },
   "labelEnv": {
     "type": "label",
@@ -201,21 +201,21 @@
   },
   "baseLocation": {
     "min": 0,
-    "max": 1,
-    "step": 0.01,
+    "max": 255,
+    "step": 1,
     "text": "Base Location",
     "help": "Where shake should be calculated from",
     "type": "slider",
-    "value": 0.2
+    "value": 2
   },
   "shakeMultiplier": {
     "min": 0,
-    "max": 10,
-    "step": 0.1,
+    "max": 100,
+    "step": 0.5,
     "text": "Shake Multiplier",
     "help": "make em shake",
     "type": "slider",
-    "value": 0
+    "value": 8
   },
   "fpsLock": {
     "type": "checkbox",

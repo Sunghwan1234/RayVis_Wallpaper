@@ -42,11 +42,10 @@ try {
     for(let i = 0; i < (bufferLength); i++) {
         const element = document.createElement('span');
         element.classList.add('element');
+        element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
+
         elements.push(element);
         visualizer.appendChild(element);
-
-        element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
-        element.style.transform = `rotateZ(${i * (360/bufferLength)}deg)`;
     }
     trackContainer.innerText = "";
     animate();
@@ -116,8 +115,8 @@ try {
       //trackContainer.innerText = dataArray.length;
       for (let i = 0; i < audio.length; i++) {
         average += audio[i];
-        if (i==s.baseLocation && s.shakeMultiplier!=0) {
-          shake = Math.random()*audio[i]*s.shakeMultiplier;
+        if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
+          shake = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
         }
       }
       average /= audio.length;
@@ -153,12 +152,13 @@ try {
         if (item.style.background != newBackground) {item.style.background = newBackground;}
       }
       item.style.transform = `
+        rotateZ(${index * (360/bufferLength)}deg)
         translate(-50%, ${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)}px) 
         scaleY(${1 + s.scaleY*volume}) 
         scaleX(${clamp(s.scaleX*volume, s.scaleXMin, 5)}) 
       `;
 
-      if (shake>0) {
+      if (shake!=0) {
         item.style.top = 50+shake+"%";
         item.style.left = 44+shake+"%";
       }
