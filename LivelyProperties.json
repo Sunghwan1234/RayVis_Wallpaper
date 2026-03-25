@@ -193,7 +193,7 @@
     "text": "Transition Speed",
     "help": "How fast the bars transition",
     "type": "slider",
-    "value": 0.10
+    "value": 0.5
   },
   "labelEnv": {
     "type": "label",
@@ -201,21 +201,34 @@
   },
   "baseLocation": {
     "min": 0,
-    "max": 255,
-    "step": 15,
+    "max": 127,
+    "step": 1,
     "text": "Base Location",
     "help": "Where shake should be calculated from",
     "type": "slider",
-    "value": 2
+    "value": 15
   },
   "shakeMultiplier": {
     "min": 0,
-    "max": 100,
-    "step": 0.5,
+    "max": 200,
+    "step": 1,
     "text": "Shake Multiplier",
     "help": "make em shake",
     "type": "slider",
     "value": 8
+  },
+  "labelPerformance": {
+    "type": "label",
+    "value": "Performance"
+  },
+  "diff": {
+    "min": 0.0001,
+    "max": 0.01,
+    "step": 0.0001,
+    "text": "Rounding",
+    "help": "Don't update if within difference",
+    "type": "slider",
+    "value": 0.0001
   },
   "fpsLock": {
     "type": "checkbox",

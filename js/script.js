@@ -1,11 +1,12 @@
-let visualizer = document.querySelector('.visualizer');
-let box = document.querySelector('.box');
 let trackContainer = document.querySelector('.track-info');
+let box = document.querySelector('.box');
+let visualizer = document.querySelector('.visualizer');
 
 try {
-  let audio = [];
   let bufferLength = 128;
-  let elementLength = bufferLength;
+  let audio = new Array(bufferLength).fill(0);
+  let audioTarget = new Array(bufferLength).fill(0);
+  let prevAudioTarget = new Array(bufferLength).fill(0);
   let elements = [];
   let audioReady = false;
 
@@ -31,9 +32,10 @@ try {
       scaleX: 1,
         scaleXMin: 0,
       scaleY: 0.1,
-      transition: 0.2,
+      transition: 0.5, // AKA Lerp
       baseLocation: 5,
       shakeMultiplier: 1,
+      diff: 0.0001,
       fps: 60
   };
   let settings_prev = settings;
@@ -92,15 +94,11 @@ try {
       case "scaleXMin": settings.scaleXMin = val; break;
       case "scaleY": settings.scaleY = val; break;
       
-      case "transition":
-        settings.transition = val;
-        for (let item of elements) {
-          item.style.transition = `${val}s`;
-        }
-        break;
+      case "transition": settings.transition = val; break;
       case "baseLocation": settings.baseLocation = val; break;
       case "shakeMultiplier": settings.shakeMultiplier = val; break;
 
+      case "diff": settings.diff = val; break;
       case "fpsLock": settings.fps = val ? 30 : 60; break;
     }
   }
@@ -109,52 +107,54 @@ try {
     requestAnimationFrame(animate);
     if (audioReady) {update();}
   }
-  let shakeX = 0, shakeY = 0;
   let average = 0;
   const update = () => {
-      //trackContainer.innerText = dataArray.length;
-      for (let i = 0; i < audio.length; i++) {
-        average += audio[i];
-        if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
-          shakeX = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
-          shakeY = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
-          visualizer.style.transform = `rotateZ(180deg) translate3d(${shakeX}px, ${shakeY}px, 0)`
-        }
-      }
-      average /= audio.length;
+    for (let i = 0; i < audio.length; i++) {
+      audioTarget[i] += (audio[i]-audioTarget[i]) * settings.transition;
 
-      for (let i = 0; i < elements.length; i++) {
-        itemActions(i);
+      average += audioTarget[i];
+      if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
+        const shakeX = 2*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        const shakeY = 2*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        visualizer.style.transform = `rotateZ(180deg) translate3d(${shakeX}px, ${shakeY}px, 0)`;
       }
+    }
+    average /= audioTarget.length;
+
+    for (let i = 0; i < elements.length; i++) {
+      itemActions(i);
+    }
+
+    //trackContainer.innerText = audioTarget;
   };
 
   function itemActions(index) {
+    if (settings.diff!=0&&Math.abs(audioTarget[index]-prevAudioTarget[index])<=settings.diff) {return;}
     let item = elements[index];
-    let volume = audio[index];
+    let volume = audioTarget[index];
     let s = settings;
 
-    volume += s.averageAddMult/(average+s.averageAddShift);
+    if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
 
     volume *= 1+(s.indexMult*index/bufferLength);
 
-    if (s.doAverageMult) {volume *= 
-      1+(s.averageMult/(average+s.averageMultShift));}
-    if (s.doTan) {volume = s.maxVolume*((Math.PI/2)+
-      Math.atan(s.tanMult*volume-s.tanX));
+    if (s.doAverageMult) {volume*=1+ (s.averageMult/(average+s.averageMultShift));}
+    if (s.doTan) {volume=s.maxVolume*((Math.PI/2) + Math.atan(s.tanMult*volume-s.tanX));
     } else {
       volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
     }
     if (volume >= s.despawnVolume) {
       if (settings.volumeColorMult!=0) {
         const color = Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index);
-        let newBackground = `hsl(${color},40%,40%)`;
+        const newBackground = `hsl(${color},40%,40%)`;
         if (item.style.background != newBackground) {item.style.background = newBackground;}
       }
       const translateY = clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax);
+      const scaleX = clamp(s.scaleX*volume, s.scaleXMin, 5);
       item.style.transform = `
         rotateZ(${index * (360/bufferLength)}deg) 
         translate(-50%, ${translateY}px) 
-        scale(${clamp(s.scaleX*volume, s.scaleXMin, 5)}, ${1 + s.scaleY*volume}) 
+        scale(${scaleX}, ${1 + s.scaleY*volume}) 
       `;
       if (item.style.visibility != "visible") {item.style.visibility="visible";}
     } else {
