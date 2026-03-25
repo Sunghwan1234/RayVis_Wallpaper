@@ -109,14 +109,15 @@ try {
     requestAnimationFrame(animate);
     if (audioReady) {update();}
   }
-  let shake = 0;
+  let shakeX = 0, shakeY = 0;
   let average = 0;
   const update = () => {
       //trackContainer.innerText = dataArray.length;
       for (let i = 0; i < audio.length; i++) {
         average += audio[i];
         if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
-          shake = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
+          shakeX = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
+          shakeY = 2*(Math.random()-0.5)*audio[i]*settings.shakeMultiplier;
         }
       }
       average /= audio.length;
@@ -127,9 +128,9 @@ try {
   };
 
   function itemActions(index) {
-    let item = elements[index];
-    let volume = audio[index];
-    let s = settings;
+    const item = elements[index];
+    const volume = audio[index];
+    const s = settings;
 
     //if (volume < 130) {volume*=0.4;}
     if (volume > 2000) {volume *= 0.1;}
@@ -148,21 +149,18 @@ try {
     }
     if (volume >= s.despawnVolume) {
       if (settings.volumeColorMult!=0) {
-        let newBackground = `hsl(${Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index)},40%,40%)`
+        const color = Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index);
+        const newBackground = `hsl(${color},40%,40%)`;
         if (item.style.background != newBackground) {item.style.background = newBackground;}
       }
+      const translateX = `calc(-50%+${shakeX}px)`;
+      const translateY = `${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)+shakeY}px`;
       item.style.transform = `
         rotateZ(${index * (360/bufferLength)}deg)
-        translate(-50%, ${clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax)}px) 
+        translate3d(${translateX}}, ${translateY}px, 0)
         scaleY(${1 + s.scaleY*volume}) 
         scaleX(${clamp(s.scaleX*volume, s.scaleXMin, 5)}) 
       `;
-
-      if (shake!=0) {
-        item.style.top = 50+shake+"%";
-        item.style.left = 44+shake+"%";
-      }
-
       if (item.style.visibility != "visible") {item.style.visibility="visible";}
     } else {
       if (item.style.visibility != "hidden") {item.style.visibility="hidden";}
