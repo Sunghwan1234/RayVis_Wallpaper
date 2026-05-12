@@ -3,6 +3,7 @@ const box = document.querySelector('.box');
 const background = document.querySelector('#background');
 const thumbnail = document.querySelector('#thumbnail');
 const visualizer = document.querySelector('.visualizer');
+const container = document.querySelector('.container');
 
 try {
   let bufferLength = 128;
@@ -49,7 +50,7 @@ try {
         element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
 
         elements.push(element);
-        visualizer.appendChild(element);
+        container.appendChild(element);
     }
     trackContainer.innerText = "";
     animate();
@@ -194,7 +195,8 @@ try {
         style.backgroundImage = `url(${base64String})`;
         // Fix sizing and repeating
         style.backgroundRepeat = "no-repeat";
-        style.backgroundSize = "auto 100vh";
+        style.backgroundSize = "auto 100vh"; // For full-scale
+        //style.backgroundSize = "cover";
         style.backgroundPosition = "center";
         //style.backgroundAttachment = "fixed"; // Keeps it from scrolling
       } else {

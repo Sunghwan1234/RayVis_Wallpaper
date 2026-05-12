@@ -32,35 +32,24 @@ html, body, .box {
     pointer-events: none;
 }
 .box {
+    position: absolute;
     display: flex;
     justify-content: center;
     align-items: center;
-    filter: blur(2px);
+    filter: blur(0px);
     mix-blend-mode: screen;
 }
-.visualizer {
+.visualizer, .container {
     position: relative;
     width: 300px;
     height: 300px;
     border-radius: 50%;
-    background: white;
 }
-.visualizer > * {
-    filter: contrast(16);
+.visualizer {
+    filter: blur(4px);
 }
-.play {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 250px;
-    height: 250px;
-    background: #2a2a2a;
-    border-radius: 50%;
-    z-index: 10;
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.container {
+    filter: blur(2px) contrast(16);
 }
 .element {
     position: absolute;
@@ -71,10 +60,10 @@ html, body, .box {
     width: 20px;
     height: 20px;
     border-radius: 10px;
-    border-top: 40px solid #d8baba;
+    border-top: 40px solid #f1e4e4;
     border-right: 20px solid transparent;
     border-left: 20px solid transparent;
     transform-origin: top center;
 
-    background: hsl(0, 48%, 66%);
+    background: #e9c8c8;
 }
