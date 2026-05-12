@@ -10,7 +10,7 @@
   },
   "visualizerSize": {
     "min": 100,
-    "max": 500,
+    "max": 2000,
     "step": 10,
     "text": "Circle Size",
     "help": "the white circle. 300 Default",

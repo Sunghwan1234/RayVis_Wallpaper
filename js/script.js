@@ -1,6 +1,8 @@
-let trackContainer = document.querySelector('.track-info');
-let box = document.querySelector('.box');
-let visualizer = document.querySelector('.visualizer');
+const trackContainer = document.querySelector('.track-info');
+const box = document.querySelector('.box');
+const background = document.querySelector('#background');
+const thumbnail = document.querySelector('#thumbnail');
+const visualizer = document.querySelector('.visualizer');
 
 try {
   let bufferLength = 128;
@@ -61,7 +63,7 @@ try {
     switch (name) {
       case "blur":
         settings.blur = val;
-        box.style.filter = `blur(${settings.blur}px) contrast(10);`
+        box.style.filter = `blur(${settings.blur}px)`;
         break;
       case "visualizerSize":
         settings.visualizerSize = val;
@@ -114,17 +116,21 @@ try {
 
       average += audioTarget[i];
       if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
-        const shakeX = 2*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        const shakeY = 2*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        visualizer.style.transform = `rotateZ(180deg) translate3d(${shakeX}px, ${shakeY}px, 0)`;
+        const shakeX = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        const shakeY = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        visualizer.style.transform = `translate3d(${shakeX}px, ${shakeY}px, 0)`;
+
+        const bshakeX = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        const bshakeY = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        thumbnail.style.transform = `translate3d(${bshakeX}px, ${bshakeY}px, 0)`;
       }
     }
     average /= audioTarget.length;
-
+    
+    
     for (let i = 0; i < elements.length; i++) {
       itemActions(i);
     }
-
     //trackContainer.innerText = audioTarget;
   };
 
@@ -168,12 +174,33 @@ try {
   }
 
   /**  */
-  async function livelyCurrentTrack(data) {
-    // let obj = JSON.parse(data);
-    // //when no track is playing its null
-    // if (obj != null) {
-    //   if (obj.Thumbnail != null) {} else {}
-    // } else {}
+  function livelyCurrentTrack(data) {
+    let obj = JSON.parse(data);
+    if (obj == null) {
+    } else {
+      //songTitle = obj.Title;
+      //songArtist = obj.Artist;
+
+      if (obj.Thumbnail != null) {
+        const base64String = !obj.Thumbnail.startsWith("data:image/")
+        ? "data:image/png;base64," + obj.Thumbnail
+        : obj.Thumbnail;
+        thumbnail.src = base64String;
+
+        background.src = base64String;
+
+        let style = visualizer.style;
+
+        style.backgroundImage = `url(${base64String})`;
+        // Fix sizing and repeating
+        style.backgroundRepeat = "no-repeat";
+        style.backgroundSize = "auto 100vh";
+        style.backgroundPosition = "center";
+        //style.backgroundAttachment = "fixed"; // Keeps it from scrolling
+      } else {
+        thumbnail.src = "../media/background.jpg";
+      }
+    }
   }
 
   function livelyWallpaperPlaybackChanged(data) {
