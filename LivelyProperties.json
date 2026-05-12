@@ -1,21 +1,38 @@
 {
+  "labelFilter": {
+    "type": "label",
+    "value": "Filters"
+  },
   "blur": {
     "min": 0,
     "max": 25,
     "step": 1,
     "text": "Blur",
-    "help": "Higher values make it blurrier",
+    "help": "Higher values make bars blurrier",
     "type": "slider",
     "value": 2
+  },
+  "contrast": {
+    "min": 0,
+    "max": 25,
+    "step": 1,
+    "text": "Contrast",
+    "help": "Higher values make colors pop",
+    "type": "slider",
+    "value": 12
   },
   "visualizerSize": {
     "min": 100,
     "max": 2000,
     "step": 10,
     "text": "Circle Size",
-    "help": "the white circle. 300 Default",
+    "help": "The center circle. 300 Default",
     "type": "slider",
     "value": 300
+  },
+  "labelVolume": {
+    "type": "label",
+    "value": "Volume"
   },
   "averageAddMult": {
     "min": 0,
@@ -204,7 +221,7 @@
     "max": 127,
     "step": 1,
     "text": "Base Location",
-    "help": "Where shake should be calculated from",
+    "help": "Where shake should be calculated from (def 15)",
     "type": "slider",
     "value": 15
   },

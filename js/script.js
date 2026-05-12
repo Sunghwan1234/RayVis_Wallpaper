@@ -13,8 +13,9 @@ try {
   let elements = [];
   let audioReady = false;
 
-  let settings = {
+  const settings = {
       blur: 2,
+      contrast: 12,
       visualizerSize: 300,
       averageAddMult: 0,
       averageAddShift: 1,
@@ -64,7 +65,7 @@ try {
     switch (name) {
       case "blur":
         settings.blur = val;
-        box.style.filter = `blur(${settings.blur}px)`;
+        container.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
         break;
       case "visualizerSize":
         settings.visualizerSize = val;
@@ -137,9 +138,9 @@ try {
 
   function itemActions(index) {
     if (settings.diff!=0&&Math.abs(audioTarget[index]-prevAudioTarget[index])<=settings.diff) {return;}
-    let item = elements[index];
+    const item = elements[index];
     let volume = audioTarget[index];
-    let s = settings;
+    const s = settings;
 
     if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
 
@@ -176,32 +177,28 @@ try {
 
   /**  */
   function livelyCurrentTrack(data) {
-    let obj = JSON.parse(data);
+    const obj = JSON.parse(data);
     if (obj == null) {
     } else {
       //songTitle = obj.Title;
       //songArtist = obj.Artist;
-
+      let image = "../media/background.jpg";
       if (obj.Thumbnail != null) {
-        const base64String = !obj.Thumbnail.startsWith("data:image/")
+        image = !obj.Thumbnail.startsWith("data:image/")
         ? "data:image/png;base64," + obj.Thumbnail
         : obj.Thumbnail;
-        thumbnail.src = base64String;
-
-        background.src = base64String;
-
-        let style = visualizer.style;
-
-        style.backgroundImage = `url(${base64String})`;
-        // Fix sizing and repeating
-        style.backgroundRepeat = "no-repeat";
-        style.backgroundSize = "auto 100vh"; // For full-scale
-        //style.backgroundSize = "cover";
-        style.backgroundPosition = "center";
-        //style.backgroundAttachment = "fixed"; // Keeps it from scrolling
-      } else {
-        thumbnail.src = "../media/background.jpg";
       }
+      thumbnail.src = image;
+      background.src = image;
+
+      const style = visualizer.style;
+      style.backgroundImage = `url(${image})`;
+      // Fix sizing and repeating
+      style.backgroundRepeat = "no-repeat";
+      style.backgroundSize = "auto 100vh"; // For full-scale
+      //style.backgroundSize = "cover";
+      style.backgroundPosition = "center";
+      //style.backgroundAttachment = "fixed"; // Keeps it from scrolling?
     }
   }
 

@@ -1,8 +1,8 @@
 {
   "AppVersion": "2.0.7.4",
   "Title": "RayVisualizerV3.0",
-  "Thumbnail": "rayvisv3.png",
-  "Preview": "rayvisv3.png",
+  "Thumbnail": "thumbnails/rayvisv3.png",
+  "Preview": "thumbnails/rayvisv3.png",
   "Desc": "Music visualizer using javascript",
   "Author": "Sunghwan1234",
   "License": "License.txt",
