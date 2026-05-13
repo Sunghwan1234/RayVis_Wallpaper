@@ -51,6 +51,13 @@ html, body, .box {
 .container {
     filter: blur(2px) contrast(16);
 }
+#rayCanvas {
+    position: fixed;
+    top:0; left:0;
+    width: 100vw;
+    height: 100vh;
+    pointer-events: none;
+}
 .element {
     position: absolute;
     top: 50%;

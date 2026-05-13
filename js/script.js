@@ -5,6 +5,9 @@ const thumbnail = document.querySelector('#thumbnail');
 const visualizer = document.querySelector('.visualizer');
 const container = document.querySelector('.container');
 
+const canvas = document.querySelector('#rayCanvas');
+const ctx = canvas.getContext('2d', {alpha:true});
+
 try {
   let bufferLength = 128;
   let audio = new Array(bufferLength).fill(0);
@@ -45,19 +48,31 @@ try {
   let settings_prev = settings;
 
   function init() {
-    for(let i = 0; i < (bufferLength); i++) {
-        const element = document.createElement('span');
-        element.classList.add('element');
-        element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
+    resizeCanvas();
+    //window.addEventListener('resize',resizeCanvas);
+    // This is for without canvas
+    // for(let i = 0; i < (bufferLength); i++) {
+    //     const element = document.createElement('span');
+    //     element.classList.add('element');
+    //     element.style.background = `hsl(${Math.floor(i*(255/bufferLength))},40%,40%)`;
 
-        elements.push(element);
-        container.appendChild(element);
-    }
+    //     elements.push(element);
+    //     container.appendChild(element);
+    // }
     trackContainer.innerText = "";
     animate();
   }
   const clamp = (num, min, max) => {
       if(num >= max) return max; if(num <= min) return min; return num;
+  }
+
+  function resizeCanvas() {
+    canvas.width = container.clientWidth || window.innerWidth;
+    canvas.height = container.clientHeight || window.innerHeight;
+    
+    // Maintain your custom dynamic slider sizing logic from Lively
+    visualizer.style.width = settings.visualizerSize + "px";
+    visualizer.style.height = settings.visualizerSize + "px";
   }
 
   /** Settings are changed in lively */
@@ -111,8 +126,14 @@ try {
     requestAnimationFrame(animate);
     if (audioReady) {update();}
   }
-  let average = 0;
-  const update = () => {
+  function update() {
+    ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+    const centerX = canvas.width / 2;
+    const centerY = canvas.height / 2;
+
+    let average = 0;
+    const s = settings;
     for (let i = 0; i < audio.length; i++) {
       audioTarget[i] += (audio[i]-audioTarget[i]) * settings.transition;
 
@@ -129,65 +150,66 @@ try {
     }
     average /= audioTarget.length;
     
-    
+    const angleStep = (Math.PI * 2) / bufferLength;
+
     for (let i = 0; i < elements.length; i++) {
-      itemActions(i);
+      if (s.diff!=0&&Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {return;}
+      //const item = elements[i];
+      let volume = audioTarget[i];
+
+      if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
+
+      volume *= 1+(s.indexMult*i/bufferLength);
+
+      if (s.doAverageMult) {volume*=1+ (
+        s.averageMult/(average+s.averageMultShift));
+      }
+      if (s.doTan) {
+        volume=s.maxVolume*((Math.PI/2) + Math.atan(s.tanMult*volume-s.tanX));
+      } else {
+        volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
+      }
+      if (volume >= s.despawnVolume) {
+        const angle = i*angleStep;
+        const hMax = s.heightMax === 0 ? canvas.height : s.heightMax;
+        const translateY = clamp(s.heightMultiplier * volume + s.heightMin, 0, hMax);
+        const scaleX = clamp(s.scaleX * volume, s.scaleXMin, 5);
+
+        const barWidth = Math.max(1, currentScaleX * 4); 
+        const barHeight = 1 + (s.scaleY * volume * 10); 
+
+        ctx.save();
+        ctx.translate(centerX, centerY);
+        ctx.rotate(angle);
+
+        if (s.volumeColorMult!=0) {
+          const color = Math.floor(s.volumeColorMult*volume+(255/bufferLength)*i);
+          const newBackground = `hsl(${color},40%,40%)`;
+          if (item.style.background != newBackground) {item.style.background = newBackground;}
+        }
+
+        ctx.fillRect(-barWidth/2, translateY, barWidth, barHeight);
+        ctx.restore();
+      }
     }
     //trackContainer.innerText = audioTarget;
   };
 
-  function itemActions(index) {
-    if (settings.diff!=0&&Math.abs(audioTarget[index]-prevAudioTarget[index])<=settings.diff) {return;}
-    const item = elements[index];
-    let volume = audioTarget[index];
-    const s = settings;
-
-    if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
-
-    volume *= 1+(s.indexMult*index/bufferLength);
-
-    if (s.doAverageMult) {volume*=1+ (s.averageMult/(average+s.averageMultShift));}
-    if (s.doTan) {volume=s.maxVolume*((Math.PI/2) + Math.atan(s.tanMult*volume-s.tanX));
-    } else {
-      volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
-    }
-    if (volume >= s.despawnVolume) {
-      if (settings.volumeColorMult!=0) {
-        const color = Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index);
-        const newBackground = `hsl(${color},40%,40%)`;
-        if (item.style.background != newBackground) {item.style.background = newBackground;}
-      }
-      const translateY = clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax);
-      const scaleX = clamp(s.scaleX*volume, s.scaleXMin, 5);
-      item.style.transform = `
-        rotateZ(${index * (360/bufferLength)}deg) 
-        translate(-50%, ${translateY}px) 
-        scale(${scaleX}, ${1 + s.scaleY*volume}) 
-      `;
-      if (item.style.visibility != "visible") {item.style.visibility="visible";}
-    } else {
-      if (item.style.visibility != "hidden") {item.style.visibility="hidden";}
-    }
-  }
 
   function livelyAudioListener(audioArray) {
-    audio = audioArray;
-    audioReady = true;
+    audio = audioArray; audioReady = true;
   }
 
   /**  */
   function livelyCurrentTrack(data) {
     const obj = JSON.parse(data);
-    if (obj == null) {
-    } else {
-      //songTitle = obj.Title;
-      //songArtist = obj.Artist;
-      let image = "../media/background.jpg";
-      if (obj.Thumbnail != null) {
-        image = !obj.Thumbnail.startsWith("data:image/")
+    let image = "../media/background.jpg";
+    if (obj && obj.Thumbnail) {
+      //songTitle = obj.Title; songArtist = obj.Artist;
+      image = !obj.Thumbnail.startsWith("data:image/")
         ? "data:image/png;base64," + obj.Thumbnail
         : obj.Thumbnail;
-      }
+      
       thumbnail.src = image;
       background.src = image;
 
