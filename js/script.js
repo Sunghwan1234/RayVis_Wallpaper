@@ -3,7 +3,6 @@ const box = document.querySelector('.box');
 const background = document.querySelector('#background');
 const thumbnail = document.querySelector('#thumbnail');
 const visualizer = document.querySelector('.visualizer');
-const container = document.querySelector('.container');
 
 const canvas = document.querySelector('#rayCanvas');
 const ctx = canvas.getContext('2d', {alpha:true});
@@ -13,7 +12,7 @@ try {
   let audio = new Array(bufferLength).fill(0);
   let audioTarget = new Array(bufferLength).fill(0);
   let prevAudioTarget = new Array(bufferLength).fill(0);
-  let elements = [];
+//  let elements = [];
   let audioReady = false;
 
   const settings = {
@@ -67,8 +66,8 @@ try {
   }
 
   function resizeCanvas() {
-    canvas.width = container.clientWidth || window.innerWidth;
-    canvas.height = container.clientHeight || window.innerHeight;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
     
     // Maintain your custom dynamic slider sizing logic from Lively
     visualizer.style.width = settings.visualizerSize + "px";
@@ -80,7 +79,11 @@ try {
     switch (name) {
       case "blur":
         settings.blur = val;
-        container.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+        canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+        break;
+      case "contrast":
+        settings.contrast = val;
+        canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
         break;
       case "visualizerSize":
         settings.visualizerSize = val;
@@ -128,19 +131,23 @@ try {
   }
   function update() {
     ctx.clearRect(0,0,canvas.width, canvas.height);
-    ctx.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+    //ctx.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+
+    const s = settings;
     const centerX = canvas.width / 2;
     const centerY = canvas.height / 2;
 
+    let shakeX;
+    let shakeY;
+
     let average = 0;
-    const s = settings;
     for (let i = 0; i < audio.length; i++) {
       audioTarget[i] += (audio[i]-audioTarget[i]) * settings.transition;
-
       average += audioTarget[i];
-      if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
-        const shakeX = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        const shakeY = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+
+      if (i == settings.baseLocation && settings.shakeMultiplier !== 0) {
+        shakeX = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        shakeY = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
         visualizer.style.transform = `translate3d(${shakeX}px, ${shakeY}px, 0)`;
 
         const bshakeX = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
@@ -152,8 +159,8 @@ try {
     
     const angleStep = (Math.PI * 2) / bufferLength;
 
-    for (let i = 0; i < elements.length; i++) {
-      if (s.diff!=0&&Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {return;}
+    for (let i = 0; i < bufferLength; i++) {
+      if (s.diff!=0&&Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {continue;}
       //const item = elements[i];
       let volume = audioTarget[i];
 
@@ -175,17 +182,18 @@ try {
         const translateY = clamp(s.heightMultiplier * volume + s.heightMin, 0, hMax);
         const scaleX = clamp(s.scaleX * volume, s.scaleXMin, 5);
 
-        const barWidth = Math.max(1, currentScaleX * 4); 
+        const barWidth = Math.max(1, scaleX * 4); 
         const barHeight = 1 + (s.scaleY * volume * 10); 
 
         ctx.save();
         ctx.translate(centerX, centerY);
         ctx.rotate(angle);
 
-        if (s.volumeColorMult!=0) {
+        if (s.volumeColorMult !== 0) {
           const color = Math.floor(s.volumeColorMult*volume+(255/bufferLength)*i);
-          const newBackground = `hsl(${color},40%,40%)`;
-          if (item.style.background != newBackground) {item.style.background = newBackground;}
+          ctx.fillStyle = `hsl(${color%360}, 50%, 50%)`;
+        } else {
+          ctx.fillStyle = `hsl(${Math.floor(i*(255 / bufferLength))}, 40%, 40%)`;
         }
 
         ctx.fillRect(-barWidth/2, translateY, barWidth, barHeight);
@@ -232,4 +240,5 @@ try {
   init();
 } catch (e) {
     trackContainer.innerText = e;
+
 }
