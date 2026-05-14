@@ -19,7 +19,7 @@
     "text": "Contrast",
     "help": "Higher values make colors pop",
     "type": "slider",
-    "value": 12
+    "value": 0
   },
   "visualizerSize": {
     "min": 100,
@@ -34,30 +34,12 @@
     "type": "label",
     "value": "Volume"
   },
-  "averageAddMult": {
-    "min": 0,
-    "max": 100,
-    "step": 1,
-    "text": "Average Addition Multiplier",
-    "help": "volume+=this/(average+avAddShift)",
-    "type": "slider",
-    "value": 0
-  },
-  "averageAddShift": {
-    "min": 0,
-    "max": 10,
-    "step": 0.01,
-    "text": "Average Addition Shift",
-    "help": "volume+=avAddMult/(average+this)",
-    "type": "slider",
-    "value": 0
-  },
   "indexMultiplier": {
     "min": 0,
     "max": 50,
     "step": 1,
     "text": "Index Multiplier",
-    "help": "Makes the left bigger",
+    "help": "Makes the left bigger. Default 10",
     "type": "slider",
     "value": 10
   },
@@ -72,7 +54,7 @@
     "max": 1,
     "step": 0.005,
     "text": "Average Multiplier Shift",
-    "help": "Down for more accuracy",
+    "help": "Down for more accuracy, Default 0.020",
     "type": "slider",
     "value": 0.020
   },
@@ -81,7 +63,7 @@
     "max": 100,
     "step": 0.1,
     "text": "Average Multiplier",
-    "help": "Multiplier for averager",
+    "help": "Multiplier for averager, Default 1.6",
     "type": "slider",
     "value": 1.6
   },
@@ -142,28 +124,28 @@
   },
   "volumeColorMult": {
     "min": 0,
-    "max": 10,
-    "step": 0.01,
+    "max": 5,
+    "step": 0.002,
     "text": "Volume Color Multiplier",
     "help": "Color changes with volume",
     "type": "slider",
-    "value": 0.1
+    "value": 0.002
   },
   "heightMin": {
-    "min": 0,
-    "max": 500,
-    "step": 1,
+    "min": -200,
+    "max": 200,
+    "step": 2,
     "text": "Minimum Height",
-    "help": "125 if unsure",
+    "help": "0 for exact",
     "type": "slider",
-    "value": 125
+    "value": 0
   },
   "heightMax": {
     "min": 0,
     "max": 500,
-    "step": 1,
+    "step": 2,
     "text": "Maximum Height",
-    "help": "",
+    "help": "0 for no Height",
     "type": "slider",
     "value": 200
   },
@@ -177,38 +159,38 @@
     "value": 0.1
   },
   "scaleX": {
-    "min": 0.0005,
-    "max": 0.0100,
-    "step": 0.0005,
+    "min": 0.000,
+    "max": 0.050,
+    "step": 0.001,
     "text": "X Scaling",
-    "help": "Big",
+    "help": "Default 0.003",
     "type": "slider",
-    "value": 0.0015
+    "value": 0.003
   },
   "scaleXMin": {
     "min": 0.01,
-    "max": 0.99,
+    "max": 2.00,
     "step": 0.01,
     "text": "Minimum X Scale",
-    "help": "Default 0.10",
+    "help": "Default 0.50",
     "type": "slider",
-    "value": 0.10
+    "value": 0.50
   },
   "scaleY": {
-    "min": 0.001,
-    "max": 0.050,
-    "step": 0.001,
+    "min": 0.01,
+    "max": 0.10,
+    "step": 0.01,
     "text": "Y Scaling",
-    "help": "mess around with it",
+    "help": "Default 0.05",
     "type": "slider",
-    "value": 0.020
+    "value": 0.05
   },
   "transition": {
     "min": 0,
     "max": 1,
     "step": 0.01,
     "text": "Transition Speed",
-    "help": "How fast the bars transition",
+    "help": "How fast the bars transition. Default 0.5",
     "type": "slider",
     "value": 0.5
   },
@@ -227,8 +209,8 @@
   },
   "shakeMultiplier": {
     "min": 0,
-    "max": 200,
-    "step": 1,
+    "max": 500,
+    "step": 2,
     "text": "Shake Multiplier",
     "help": "make em shake",
     "type": "slider",

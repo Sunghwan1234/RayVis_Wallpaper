@@ -160,7 +160,7 @@ try {
     const angleStep = (Math.PI * 2) / bufferLength;
 
     for (let i = 0; i < bufferLength; i++) {
-      if (s.diff!=0&&Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {continue;}
+      if (s.diff!=0 && Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {continue;}
       //const item = elements[i];
       let volume = audioTarget[i];
 
@@ -179,21 +179,21 @@ try {
       if (volume >= s.despawnVolume) {
         const angle = i*angleStep;
         const hMax = s.heightMax === 0 ? canvas.height : s.heightMax;
-        const translateY = clamp(s.heightMultiplier * volume + s.heightMin, 0, hMax);
+        const translateY = clamp(s.visualizerSize/2+s.heightMin + s.heightMultiplier*volume, 0, s.visualizerSize/2+hMax);
         const scaleX = clamp(s.scaleX * volume, s.scaleXMin, 5);
 
-        const barWidth = Math.max(1, scaleX * 4); 
-        const barHeight = 1 + (s.scaleY * volume * 10); 
+        const barWidth = Math.max(1, scaleX * 4);
+        const barHeight = 1 + (s.scaleY * volume * 10);
 
         ctx.save();
-        ctx.translate(centerX, centerY);
+        ctx.translate(centerX + shakeX, centerY+shakeY);
         ctx.rotate(angle);
 
         if (s.volumeColorMult !== 0) {
-          const color = Math.floor(s.volumeColorMult*volume+(255/bufferLength)*i);
-          ctx.fillStyle = `hsl(${color%360}, 50%, 50%)`;
+          const color = Math.floor(s.volumeColorMult*volume + 360*i/bufferLength);
+          ctx.fillStyle = `hsl(${color}, 50%, 50%)`;
         } else {
-          ctx.fillStyle = `hsl(${Math.floor(i*(255 / bufferLength))}, 40%, 40%)`;
+          ctx.fillStyle = `hsl(${Math.floor(360*(i/bufferLength))}, 50%, 50%)`;
         }
 
         ctx.fillRect(-barWidth/2, translateY, barWidth, barHeight);
@@ -217,19 +217,17 @@ try {
       image = !obj.Thumbnail.startsWith("data:image/")
         ? "data:image/png;base64," + obj.Thumbnail
         : obj.Thumbnail;
-      
-      thumbnail.src = image;
-      background.src = image;
-
-      const style = visualizer.style;
-      style.backgroundImage = `url(${image})`;
-      // Fix sizing and repeating
-      style.backgroundRepeat = "no-repeat";
-      style.backgroundSize = "auto 100vh"; // For full-scale
-      //style.backgroundSize = "cover";
-      style.backgroundPosition = "center";
       //style.backgroundAttachment = "fixed"; // Keeps it from scrolling?
     }
+    thumbnail.src = image;
+    background.src = image;
+
+    const style = visualizer.style;
+    style.backgroundImage = `url(${image})`;
+    style.backgroundRepeat = "no-repeat";
+    style.backgroundSize = "auto 100vh"; // For full-scale
+    //style.backgroundSize = "cover"; // For vis scale
+    style.backgroundPosition = "center";
   }
 
   function livelyWallpaperPlaybackChanged(data) {

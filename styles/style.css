@@ -3,11 +3,9 @@
     padding: 0;
     box-sizing: border-box;
 }
-p {
+.track-info {
     color:white;
     font-size: 40px;
-}
-.track-info {
     position: absolute;
 }
 #thumbnail, #background {
@@ -19,7 +17,6 @@ p {
     z-index: 0;       /* Places it behind text */
     filter: blur(8px);
     /*transform: scale(1); /* Hides blurry edges */
-    pointer-events: none;  /* Makes it "unclickable" */
 }
 #thumbnail {
     object-fit: contain;
@@ -42,17 +39,11 @@ html, body, .box {
     filter: blur(0px);
     mix-blend-mode: screen;
 }
-.visualizer, .container {
-    position: relative;
-    width: 300px;
-    height: 300px;
-    border-radius: 50%;
-}
 .visualizer {
-    filter: blur(4px);
-}
-.container {
-    filter: blur(2px) contrast(16);
+    position: relative;
+    width: 300px; height: 300px;
+    border-radius: 50%;
+    filter: blur(4px) contrast(16);
 }
 #rayCanvas {
     position: fixed;
@@ -60,20 +51,4 @@ html, body, .box {
     width: 100vw; height: 100vh;
     pointer-events: none;
     will-change: filter, transform;
-}
-.element {
-    position: absolute;
-    top: 50%;
-    left: 46%;
-    transform: translate(-50%, -50%);
-    display: inline-block;
-    width: 20px;
-    height: 20px;
-    border-radius: 10px;
-    border-top: 40px solid #f1e4e4;
-    border-right: 20px solid transparent;
-    border-left: 20px solid transparent;
-    transform-origin: top center;
-
-    background: #e9c8c8;
 }
