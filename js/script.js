@@ -1,5 +1,6 @@
 const trackContainer = document.querySelector('.track-info');
 const box = document.querySelector('.box');
+const box2 = document.querySelector('.box2');
 const background = document.querySelector('#background');
 const thumbnail = document.querySelector('#thumbnail');
 const visualizer = document.querySelector('.visualizer');
@@ -67,6 +68,10 @@ try {
         settings.blur = val;
         container.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
         break;
+      case "contrast":
+        settings.contrast = val;
+        container.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+        break;
       case "visualizerSize":
         settings.visualizerSize = val;
         visualizer.style.width = settings.visualizerSize+"px";
@@ -113,17 +118,20 @@ try {
   }
   let average = 0;
   const update = () => {
+    const s = settings;
+
     for (let i = 0; i < audio.length; i++) {
-      audioTarget[i] += (audio[i]-audioTarget[i]) * settings.transition;
+      audioTarget[i] += (audio[i]-audioTarget[i]) * s.transition;
 
       average += audioTarget[i];
-      if (i==settings.baseLocation && settings.shakeMultiplier!=0) {
-        const shakeX = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        const shakeY = 0.1*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+      if (i==s.baseLocation && s.shakeMultiplier!=0) {
+        const shakeX = 0.5*(Math.random()-0.5)*audioTarget[i]*s.shakeMultiplier;
+        const shakeY = 0.5*(Math.random()-0.5)*audioTarget[i]*s.shakeMultiplier;
         visualizer.style.transform = `translate3d(${shakeX}px, ${shakeY}px, 0)`;
+        container.style.transform = `translate3d(${shakeX}px, ${shakeY}px, 0)`;
 
-        const bshakeX = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        const bshakeY = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
+        const bshakeX = 0.1*(Math.random()-0.5)*audioTarget[i]*s.shakeMultiplier;
+        const bshakeY = 0.1*(Math.random()-0.5)*audioTarget[i]*s.shakeMultiplier;
         thumbnail.style.transform = `translate3d(${bshakeX}px, ${bshakeY}px, 0)`;
       }
     }
@@ -131,44 +139,39 @@ try {
     
     
     for (let i = 0; i < elements.length; i++) {
-      itemActions(i);
+      if (s.diff!=0&&Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {return;}
+      let volume = audioTarget[i];
+
+      if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
+
+      volume *= 1+(s.indexMult*i/bufferLength);
+
+      if (s.doAverageMult) {volume*=1+ (s.averageMult/(average+s.averageMultShift));}
+      if (s.doTan) {volume=s.maxVolume*((Math.PI/2) + Math.atan(s.tanMult*volume-s.tanX));
+      } else {
+        volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
+      }
+      if (volume >= s.despawnVolume) {
+        const item = elements[i];
+        if (s.volumeColorMult!=0) {
+          const color = Math.floor(s.volumeColorMult*volume+(255/bufferLength)*i);
+          const newBackground = `hsl(${color},40%,40%)`;
+          if (item.style.background != newBackground) {item.style.background = newBackground;}
+        }
+        const translateY = clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax);
+        const scaleX = clamp(s.scaleX*volume, s.scaleXMin, 5);
+        item.style.transform = `
+          rotateZ(${i * (360/bufferLength)}deg) 
+          translate(-50%, ${translateY}px) 
+          scale(${scaleX}, ${1 + s.scaleY*volume}) 
+        `;
+        if (item.style.visibility != "visible") {item.style.visibility="visible";}
+      } else {
+        if (elements[i].style.visibility != "hidden") {elements[i].style.visibility="hidden";}
+      }
     }
     //trackContainer.innerText = audioTarget;
   };
-
-  function itemActions(index) {
-    if (settings.diff!=0&&Math.abs(audioTarget[index]-prevAudioTarget[index])<=settings.diff) {return;}
-    const item = elements[index];
-    let volume = audioTarget[index];
-    const s = settings;
-
-    if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
-
-    volume *= 1+(s.indexMult*index/bufferLength);
-
-    if (s.doAverageMult) {volume*=1+ (s.averageMult/(average+s.averageMultShift));}
-    if (s.doTan) {volume=s.maxVolume*((Math.PI/2) + Math.atan(s.tanMult*volume-s.tanX));
-    } else {
-      volume = clamp(s.volumeMultiplier*volume,0,s.maxVolume);
-    }
-    if (volume >= s.despawnVolume) {
-      if (settings.volumeColorMult!=0) {
-        const color = Math.floor(settings.volumeColorMult*volume+(255/bufferLength)*index);
-        const newBackground = `hsl(${color},40%,40%)`;
-        if (item.style.background != newBackground) {item.style.background = newBackground;}
-      }
-      const translateY = clamp(s.heightMultiplier*volume+s.heightMin,0,s.heightMax);
-      const scaleX = clamp(s.scaleX*volume, s.scaleXMin, 5);
-      item.style.transform = `
-        rotateZ(${index * (360/bufferLength)}deg) 
-        translate(-50%, ${translateY}px) 
-        scale(${scaleX}, ${1 + s.scaleY*volume}) 
-      `;
-      if (item.style.visibility != "visible") {item.style.visibility="visible";}
-    } else {
-      if (item.style.visibility != "hidden") {item.style.visibility="hidden";}
-    }
-  }
 
   function livelyAudioListener(audioArray) {
     audio = audioArray;
@@ -178,8 +181,7 @@ try {
   /**  */
   function livelyCurrentTrack(data) {
     const obj = JSON.parse(data);
-    if (obj == null) {
-    } else {
+    if (obj != null) {
       //songTitle = obj.Title;
       //songArtist = obj.Artist;
       let image = "../media/background.jpg";
