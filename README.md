@@ -1,8 +1,8 @@
-RayVis Audio Visualizer Wallpaper by Sunghwan1234
+<h1>RayVis Audio Visualizer Wallpaper by Sunghwan1234</h1>
 
 How to use this wallpaper:
 1. Get Lively Wallpaper from the Microsoft Store.
-2. Download the release (.zip) or put every file in here in a .zip
+2. Download the release (.zip) or put every file in the source code in a .zip
 3. Drag the .zip into Lively Wallpaper.
 
 Warning:
@@ -11,4 +11,4 @@ Warning:
 - I will gladly accept YOUR help fixing bugs and your suggestions!
 
 With this out of the way, have fun using this wallpaper/making your own! I'm happy to help anyone.
-credits in License.txt
+Credits are in License.txt
