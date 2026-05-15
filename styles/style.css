@@ -43,7 +43,7 @@ html, body, .box {
     position: relative;
     width: 300px; height: 300px;
     border-radius: 50%;
-    filter: blur(4px) contrast(16);
+    filter: blur(4px) contrast(4);
 }
 #rayCanvas {
     position: fixed;

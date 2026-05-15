@@ -17,10 +17,9 @@ try {
 
   const settings = {
       blur: 2,
-      contrast: 12,
+      contrast: 100,
+      filters: "",
       visualizerSize: 300,
-      averageAddMult: 0,
-      averageAddShift: 1,
       indexMult: 0,
       doAverageMult: false,
         averageMultShift: 1,
@@ -79,19 +78,23 @@ try {
     switch (name) {
       case "blur":
         settings.blur = val;
-        canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+        updateCanvasFilters();
         break;
       case "contrast":
         settings.contrast = val;
-        canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
+        updateCanvasFilters();
+        break;
+      case "filters":
+        settings.filters = val;
+        updateCanvasFilters();
         break;
       case "visualizerSize":
         settings.visualizerSize = val;
         visualizer.style.width = settings.visualizerSize+"px";
         visualizer.style.height = settings.visualizerSize+"px";
         break;
-      case "averageAddMult": settings.averageAddMult = val; break;
-      case "averageAddShift": settings.averageAddShift = val; break;
+      // case "averageAddMult": settings.averageAddMult = val; break;
+      // case "averageAddShift": settings.averageAddShift = val; break;
 
       case "indexMultiplier": settings.indexMult = val; break;
 
@@ -123,6 +126,9 @@ try {
       case "diff": settings.diff = val; break;
       case "fpsLock": settings.fps = val ? 30 : 60; break;
     }
+  }
+  function updateCanvasFilters() {
+    canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast}%) ${setttings.filters}`;
   }
 
   function animate() {
@@ -164,7 +170,7 @@ try {
       //const item = elements[i];
       let volume = audioTarget[i];
 
-      if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
+      //if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
 
       volume *= 1+(s.indexMult*i/bufferLength);
 

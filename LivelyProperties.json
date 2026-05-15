@@ -8,18 +8,24 @@
     "max": 25,
     "step": 1,
     "text": "Blur",
-    "help": "Higher values make bars blurrier",
+    "help": "Higher values make bars blurrier.",
     "type": "slider",
     "value": 2
   },
   "contrast": {
     "min": 0,
-    "max": 25,
-    "step": 1,
+    "max": 200,
+    "step": 5,
     "text": "Contrast",
-    "help": "Higher values make colors pop",
+    "help": "Higher values make colors pop. Default 100",
     "type": "slider",
-    "value": 0
+    "value": 100
+  },
+  "filters": {
+    "type": "textbox",
+    "text": "Other CSS Filters",
+    "value": "",
+    "help": "Try invert(100%)"
   },
   "visualizerSize": {
     "min": 100,
@@ -109,27 +115,18 @@
     "type": "slider",
     "value": 15
   },
-  "despawnVolume": {
-    "min": 0,
-    "max": 100,
-    "step": 1,
-    "text": "despawnVolume",
-    "help": "What Volume to despawn (up for performance)",
-    "type": "slider",
-    "value": 0
-  },
   "labelVisuals": {
     "type": "label",
     "value": "Visuals"
   },
   "volumeColorMult": {
     "min": 0,
-    "max": 5,
+    "max": 1,
     "step": 0.002,
     "text": "Volume Color Multiplier",
     "help": "Color changes with volume",
     "type": "slider",
-    "value": 0.002
+    "value": 0.150
   },
   "heightMin": {
     "min": -200,
@@ -150,40 +147,40 @@
     "value": 200
   },
   "heightMultiplier": {
-    "min": 0.01,
-    "max": 5,
-    "step": 0.01,
+    "min": 0,
+    "max": 2,
+    "step": 0.005,
     "text": "Height Multiplier",
-    "help": "1 if unsure",
+    "help": "",
     "type": "slider",
-    "value": 0.1
+    "value": 0.01
   },
   "scaleX": {
     "min": 0.000,
     "max": 0.050,
     "step": 0.001,
     "text": "X Scaling",
-    "help": "Default 0.003",
+    "help": "Default 0.010",
     "type": "slider",
-    "value": 0.003
+    "value": 0.010
   },
   "scaleXMin": {
     "min": 0.01,
-    "max": 2.00,
+    "max": 3.00,
     "step": 0.01,
     "text": "Minimum X Scale",
-    "help": "Default 0.50",
+    "help": "Default 2.00",
     "type": "slider",
-    "value": 0.50
+    "value": 2.00
   },
   "scaleY": {
     "min": 0.01,
-    "max": 0.10,
+    "max": 1.00,
     "step": 0.01,
     "text": "Y Scaling",
-    "help": "Default 0.05",
+    "help": "Default 0.10",
     "type": "slider",
-    "value": 0.05
+    "value": 0.10
   },
   "transition": {
     "min": 0,
@@ -203,9 +200,9 @@
     "max": 127,
     "step": 1,
     "text": "Base Location",
-    "help": "Where shake should be calculated from (def 15)",
+    "help": "Where shake should be calculated from (4 for bass/drums)",
     "type": "slider",
-    "value": 15
+    "value": 4
   },
   "shakeMultiplier": {
     "min": 0,
@@ -220,14 +217,23 @@
     "type": "label",
     "value": "Performance"
   },
+  "despawnVolume": {
+    "min": 0,
+    "max": 100,
+    "step": 1,
+    "text": "despawnVolume",
+    "help": "What Volume to despawn (up for performance)",
+    "type": "slider",
+    "value": 0
+  },
   "diff": {
     "min": 0.0001,
     "max": 0.01,
     "step": 0.0001,
     "text": "Rounding",
-    "help": "Don't update if within difference",
+    "help": "Up for performance",
     "type": "slider",
-    "value": 0.0001
+    "value": 0.0050
   },
   "fpsLock": {
     "type": "checkbox",
