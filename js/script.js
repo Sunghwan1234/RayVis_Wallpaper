@@ -128,7 +128,7 @@ try {
     }
   }
   function updateCanvasFilters() {
-    canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast}%) ${setttings.filters}`;
+    canvas.style.filter = `blur(${settings.blur}px) contrast(${settings.contrast}%) ${settings.filters}`;
   }
 
   function animate() {
