@@ -1,11 +1,13 @@
 const trackContainer = document.querySelector('.track-info');
 const box = document.querySelector('.box');
 const background = document.querySelector('#background');
-const thumbnail = document.querySelector('#thumbnail');
 const visualizer = document.querySelector('.visualizer');
 
 const canvas = document.querySelector('#rayCanvas');
 const ctx = canvas.getContext('2d', {alpha:true});
+
+const preloadCanvas = document.createElement('canvas');
+const preloadCtx = preloadCanvas.getContext('2d');
 
 try {
   let bufferLength = 128;
@@ -16,7 +18,9 @@ try {
   let audioReady = false;
 
   const settings = {
-      blur: 2,
+      backgroundBlur: 4,
+      foregroundBlur: 4,
+      blur: 0,
       contrast: 100,
       filters: "",
       visualizerSize: 300,
@@ -44,6 +48,15 @@ try {
       fps: 60
   };
   let settings_prev = settings;
+
+  let image = new Image();
+  let movingImg = {
+    x:0, y:0,
+    width: 0, height: 0,
+  };
+  image.src = "../media/background.jpg";
+  let preloadedImage = false;
+  preloadImage();
 
   function init() {
     resizeCanvas();
@@ -76,6 +89,16 @@ try {
   /** Settings are changed in lively */
   function livelyPropertyListener(name, val) {
     switch (name) {
+      case "backgroundBlur":
+        settings.backgroundBlur = val;
+        updateCanvasFilters();
+        preloadImage();
+        break;
+        case "foregroundBlur":
+        settings.foregroundBlur = val;
+        updateCanvasFilters();
+        preloadImage();
+        break;
       case "blur":
         settings.blur = val;
         updateCanvasFilters();
@@ -136,7 +159,7 @@ try {
     if (audioReady) {update();}
   }
   function update() {
-    ctx.clearRect(0,0,canvas.width, canvas.height);
+    ctx.clearRect(0,0,canvas.width,canvas.height);
     //ctx.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
 
     const s = settings;
@@ -158,19 +181,16 @@ try {
 
         const bshakeX = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
         const bshakeY = 0.05*(Math.random()-0.5)*audioTarget[i]*settings.shakeMultiplier;
-        thumbnail.style.transform = `translate3d(${bshakeX}px, ${bshakeY}px, 0)`;
+
+        ctx.drawImage(preloadCanvas, movingImg.x+bshakeX, movingImg.y+bshakeY, movingImg.width, movingImg.height);
       }
     }
     average /= audioTarget.length;
     
     const angleStep = (Math.PI * 2) / bufferLength;
-
     for (let i = 0; i < bufferLength; i++) {
       if (s.diff!=0 && Math.abs(audioTarget[i]-prevAudioTarget[i])<=s.diff) {continue;}
-      //const item = elements[i];
       let volume = audioTarget[i];
-
-      //if (s.averageAddMult!=0) {volume+=s.averageAddMult/(average+s.averageAddShift);}
 
       volume *= 1+(s.indexMult*i/bufferLength);
 
@@ -206,7 +226,6 @@ try {
         ctx.restore();
       }
     }
-    //trackContainer.innerText = audioTarget;
   };
 
 
@@ -217,32 +236,55 @@ try {
   /**  */
   function livelyCurrentTrack(data) {
     const obj = JSON.parse(data);
-    let image = "../media/background.jpg";
+    let trackImage = "../media/background.jpg";
     if (obj && obj.Thumbnail) {
       //songTitle = obj.Title; songArtist = obj.Artist;
-      image = !obj.Thumbnail.startsWith("data:image/")
+      trackImage = !obj.Thumbnail.startsWith("data:image/")
         ? "data:image/png;base64," + obj.Thumbnail
         : obj.Thumbnail;
       //style.backgroundAttachment = "fixed"; // Keeps it from scrolling?
     }
-    thumbnail.src = image;
-    background.src = image;
+    image.src = trackImage;
+
+    background.src = trackImage;
 
     const style = visualizer.style;
-    style.backgroundImage = `url(${image})`;
+    style.backgroundImage = `url(${trackImage})`;
     style.backgroundRepeat = "no-repeat";
     style.backgroundSize = "auto 100vh"; // For full-scale
     //style.backgroundSize = "cover"; // For vis scale
     style.backgroundPosition = "center";
   }
 
+  image.onload = () => {preloadImage();};
+
   function livelyWallpaperPlaybackChanged(data) {
     // var obj = JSON.parse(data);
     // isPaused = obj.IsPaused;
   }
 
+  function preloadImage() {
+    const hRatio = canvas.width/image.width;
+    const vRatio = canvas.height/image.height;
+    const ratio = Math.min(hRatio,vRatio);
+    movingImg.width = image.width*ratio;
+    movingImg.height = image.height*ratio;
+
+    movingImg.x = (canvas.width-movingImg.width)/2;
+    movingImg.y = (canvas.height-movingImg.height)/2;
+
+    preloadCanvas.width = movingImg.width;
+    preloadCanvas.height = movingImg.height;
+    if (ratio > 1) {
+      preloadCtx.filter = `blur(${settings.backgroundBlur}px)`;
+    }
+    preloadCtx.clearRect(0,0, preloadCanvas.width, preloadCanvas.height);
+    preloadCtx.drawImage(image, 0, 0, movingImg.width, movingImg.height);
+
+    preloadedImage = true;
+  }
+
   init();
 } catch (e) {
     trackContainer.innerText = e;
-
 }

@@ -1,3 +1,0 @@
-by Sunghwan1234
-
-Basic audio visualizer from lopiacode https://github.com/lopiacode/audio-visualizer

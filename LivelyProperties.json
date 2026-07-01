@@ -1,14 +1,32 @@
 {
   "labelFilter": {
     "type": "label",
-    "value": "Filters"
+    "value": "Filters (Down if laggy)"
+  },
+  "backgroundBlur": {
+    "min": 0,
+    "max": 25,
+    "step": 1,
+    "text": "Background Blur",
+    "help": "Higher values make background blurrier.",
+    "type": "slider",
+    "value": 2
+  },
+  "foregroundBlur": {
+    "min": 0,
+    "max": 25,
+    "step": 1,
+    "text": "Foreground Blur",
+    "help": "Higher values make foreground blurrier.",
+    "type": "slider",
+    "value": 2
   },
   "blur": {
     "min": 0,
     "max": 25,
     "step": 1,
-    "text": "Blur",
-    "help": "Higher values make bars blurrier.",
+    "text": "Visualizer Blur",
+    "help": "Higher values make bars blurrier. (4 is laggiest)",
     "type": "slider",
     "value": 2
   },
@@ -32,7 +50,7 @@
     "max": 2000,
     "step": 10,
     "text": "Circle Size",
-    "help": "The center circle. 300 Default",
+    "help": "The center circle. Default 300",
     "type": "slider",
     "value": 300
   },
@@ -187,9 +205,9 @@
     "max": 1,
     "step": 0.01,
     "text": "Transition Speed",
-    "help": "How fast the bars transition. Default 0.5",
+    "help": "How smooth the bars transition. Default 0.75",
     "type": "slider",
-    "value": 0.5
+    "value": 0.75
   },
   "labelEnv": {
     "type": "label",
@@ -221,7 +239,7 @@
     "min": 0,
     "max": 100,
     "step": 1,
-    "text": "despawnVolume",
+    "text": "Visualizer Despawn Volume",
     "help": "What Volume to despawn (up for performance)",
     "type": "slider",
     "value": 0
