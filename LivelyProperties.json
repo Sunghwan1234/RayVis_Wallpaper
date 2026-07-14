@@ -26,7 +26,7 @@
     "max": 25,
     "step": 1,
     "text": "Visualizer Blur",
-    "help": "Higher values make bars blurrier. (4 is laggiest)",
+    "help": "Higher values make bars blurrier. (4 is worst performance)",
     "type": "slider",
     "value": 2
   },
@@ -50,7 +50,7 @@
     "max": 2000,
     "step": 10,
     "text": "Circle Size",
-    "help": "The center circle. Default 300",
+    "help": "The center circle's size. Default 300",
     "type": "slider",
     "value": 300
   },
@@ -63,7 +63,7 @@
     "max": 50,
     "step": 1,
     "text": "Index Multiplier",
-    "help": "Makes the left bigger. Default 10",
+    "help": "Makes the right bigger. Default 10",
     "type": "slider",
     "value": 10
   },
@@ -78,7 +78,7 @@
     "max": 1,
     "step": 0.005,
     "text": "Average Multiplier Shift",
-    "help": "Down for more accuracy, Default 0.020",
+    "help": "Down for more accuracy, Default 0.02",
     "type": "slider",
     "value": 0.020
   },
@@ -95,7 +95,7 @@
     "type": "checkbox",
     "value": false,
     "help": "volume = maxVolume*(PI/2+atan(tanMult*volume+tanX))",
-    "text": "Use Inverse Tan"
+    "text": "Use Inverse Tan (Buggy)"
   },
   "tanMult": {
     "min": 0.01,
@@ -142,7 +142,7 @@
     "max": 1,
     "step": 0.002,
     "text": "Volume Color Multiplier",
-    "help": "Color changes with volume",
+    "help": "Color changes with volume, Default 0.15",
     "type": "slider",
     "value": 0.150
   },
@@ -151,7 +151,7 @@
     "max": 200,
     "step": 2,
     "text": "Minimum Height",
-    "help": "0 for exact",
+    "help": "0 for bars to be at the visualizer size",
     "type": "slider",
     "value": 0
   },
@@ -160,7 +160,7 @@
     "max": 500,
     "step": 2,
     "text": "Maximum Height",
-    "help": "0 for no Height",
+    "help": "0 for no Height, Default 200",
     "type": "slider",
     "value": 200
   },
@@ -169,7 +169,7 @@
     "max": 2,
     "step": 0.005,
     "text": "Height Multiplier",
-    "help": "",
+    "help": "Makes bars go Up/Down. Default 0.01",
     "type": "slider",
     "value": 0.01
   },
@@ -178,7 +178,7 @@
     "max": 0.050,
     "step": 0.001,
     "text": "X Scaling",
-    "help": "Default 0.010",
+    "help": "Scale Bars Sideways. Default 0.010",
     "type": "slider",
     "value": 0.010
   },
@@ -187,7 +187,7 @@
     "max": 3.00,
     "step": 0.01,
     "text": "Minimum X Scale",
-    "help": "Default 2.00",
+    "help": "Scale Bars Sideways. Default 2.00",
     "type": "slider",
     "value": 2.00
   },
@@ -196,7 +196,7 @@
     "max": 1.00,
     "step": 0.01,
     "text": "Y Scaling",
-    "help": "Default 0.10",
+    "help": "Scale Bars Up. Default 0.10",
     "type": "slider",
     "value": 0.10
   },
@@ -240,23 +240,23 @@
     "max": 100,
     "step": 1,
     "text": "Visualizer Despawn Volume",
-    "help": "What Volume to despawn (up for performance)",
+    "help": "What volume to despawn bars (up for performance)",
     "type": "slider",
     "value": 0
   },
   "diff": {
-    "min": 0.0001,
-    "max": 0.01,
-    "step": 0.0001,
+    "min": 0,
+    "max": 0.05,
+    "step": 0.001,
     "text": "Rounding",
-    "help": "Up for performance",
+    "help": "Little effect (up for performance)",
     "type": "slider",
-    "value": 0.0050
+    "value": 0.005
   },
   "fpsLock": {
     "type": "checkbox",
     "value": false,
-    "help": "Improves performance (Not Implemented)",
-    "text": "30FPS Lock"
+    "help": "Improves performance, looks okay",
+    "text": "30 FPS Lock"
   }
 }

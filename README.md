@@ -6,16 +6,33 @@ How to use this wallpaper:
 2. Download the release (.zip) or zip every file in the source code
 3. Drag the .zip into Lively Wallpaper
 
-Warning:
+Disclaimers:
 
-- This is a laggy mess and is not guaranteed to work.
-- I will fix as many issues as possible, but it might take some time. I am one person, and an inexperienced one!
-- I will gladly accept YOUR help fixing bugs and your suggestions!
+- This project may be unstable or buggy. Please feel free to open issues, and I or others may help you fix your problem!
+- I have used Gemeni and ChatGPT for general code optimization and some features. However, this project was not generated entirely by AI.
 
 With this out of the way, have fun using this wallpaper/making your own! I'm happy to help anyone.
-Credits are in License.txt
+Credits are in LICENSE
 
 <h1>Version Changelogs</h1>
+<h2>V3.3</h2>
+
+- Moved "Visualizer" image inside of Canvas
+    - Uses the same preloaded canvas as "thumbnail" image
+    - Currently does not support unique filters
+- More performance additions (Untested)
+    - More caching
+    - Moved everything out of the try catch
+- 30 FPS Lock Finally Implemented!
+
+Current CPU/GPU Usage:
+- CPU: 9~22% (i5)
+- GPU: 6% (1050ti)
+- FPS: Stable 60
+30FPS Lock Enabled
+- CPU: 7~15%
+- GPU: 3%
+
 <h2>V3.2</h2>
 
 - Moved "thumbnail" image inside of Canvas
