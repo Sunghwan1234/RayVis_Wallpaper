@@ -15,6 +15,19 @@ With this out of the way, have fun using this wallpaper/making your own! I'm hap
 Credits are in LICENSE
 
 <h1>Version Changelogs</h1>
+<h3>V3.3.1</h3>
+
+- Small Optimization on color and math
+- Caching into arrays:
+    - Math sine and cosine
+    - Color calculation
+    - HSL Hue strings
+
+This may improve CPU/GPU performance, but I'm not sure
+
+The only way to get this patch is to zip the files yourself, or copy/paste the index.js file.
+I've made a constant inside script.js that reports the version, I'm not sure if this will help or not but its here now (probably wont be updated often)
+
 <h2>V3.3</h2>
 
 - Moved "Visualizer" image inside of Canvas

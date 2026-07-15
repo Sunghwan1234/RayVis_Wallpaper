@@ -1,3 +1,5 @@
+const version = `3.3.1`;
+
 const trackContainer = document.querySelector('.track-info');
 const box = document.querySelector('.box');
 const background = document.querySelector('#background');
@@ -50,10 +52,16 @@ const settings = {
 const perfCache = {
   /** Angle around a circle */
   angleStep: [],
+  /** Sine */
+  sin: [],
+  cos: [],
+  /** Precomputed colors */
+  colors: new Int32Array(bufferLength),
+  hslHue: [],
 };
 
 let image = new Image();
-let movingImg = {
+let imageVars = {
   x: 0, y: 0,
   width: 0, height: 0,
 };
@@ -62,14 +70,22 @@ let preloadedImage = false;
 preloadImage();
 
 function init() {
+  initPerfCache();
   resizeCanvas();
-  
-  for (let i=0;i<bufferLength;i++) {
-    perfCache.angleStep[i] = i * (Math.PI * 2) / bufferLength;
-  }
 
   trackContainer.innerText = "";
   requestAnimationFrame(loop);
+}
+function initPerfCache() {
+  for (let i=0;i<bufferLength;i++) {
+    perfCache.angleStep[i] = i * (Math.PI * 2) / bufferLength;
+    perfCache.sin[i] = Math.sin(perfCache.angleStep[i]);
+    perfCache.cos[i] = Math.cos(perfCache.angleStep[i]);
+    perfCache.colors[i] = Math.floor(360 * i / bufferLength);
+  }
+  for (let i=0;i<360;i++) {
+    perfCache.hslHue[i] = `hsl(${i},50%,50%)`;
+  }
 }
 const clamp = (num, min, max) => {
   if (num >= max) return max; if (num <= min) return min; return num;
@@ -169,6 +185,7 @@ function countFrames() {
       lastTime = performance.now();
   }
 }
+/** Update inside loop() */
 function update() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   //ctx.filter = `blur(${settings.blur}px) contrast(${settings.contrast})`;
@@ -178,46 +195,44 @@ function update() {
   const centerY = canvas.height / 2;
 
   let average = 0;
-  let colors = [];
+  const transition = s.transition
   for (let i = 0; i < audio.length; i++) {
-    audioTarget[i] += (audio[i] - audioTarget[i]) * settings.transition;
+    audioTarget[i] += (audio[i] - audioTarget[i]) * transition;
     average += audioTarget[i];
-
-    colors[i] = Math.floor(360 * i / bufferLength);
   }
   average /= audioTarget.length;
-  let shakeX=0, shakeY=0, bshakeX=0, bshakeY=0;
-  if (settings.shakeMultiplier !== 0) {
-    const shakeVolume = audioTarget[settings.baseLocation];
-    shakeX = 0.1 * (Math.random() - 0.5) * shakeVolume * settings.shakeMultiplier;
-    shakeY = 0.1 * (Math.random() - 0.5) * shakeVolume * settings.shakeMultiplier;
 
-    bshakeX = 0.05 * (Math.random() - 0.5) * shakeVolume * settings.shakeMultiplier;
-    bshakeY = 0.05 * (Math.random() - 0.5) * shakeVolume * settings.shakeMultiplier;
+  let shakeX=0, shakeY=0, bshakeX=0, bshakeY=0;
+  if (s.shakeMultiplier !== 0) {
+    const shakeVolume = audioTarget[s.baseLocation];
+    shakeX = 0.1 * (Math.random() - 0.5) * shakeVolume * s.shakeMultiplier;
+    shakeY = 0.1 * (Math.random() - 0.5) * shakeVolume * s.shakeMultiplier;
+    bshakeX = 0.05 * (Math.random() - 0.5) * shakeVolume * s.shakeMultiplier;
+    bshakeY = 0.05 * (Math.random() - 0.5) * shakeVolume * s.shakeMultiplier;
   }
 
   /** Draw the full image first */
-  ctx.drawImage(preloadCanvas, movingImg.x + bshakeX, movingImg.y + bshakeY, movingImg.width, movingImg.height);
+  ctx.drawImage(preloadCanvas, imageVars.x + bshakeX, imageVars.y + bshakeY, imageVars.width, imageVars.height);
   // Draw the little circle
   ctx.save();
   ctx.beginPath();
   ctx.arc(centerX, centerY, s.visualizerSize/2, 0, Math.PI * 2);
   ctx.clip();
-  ctx.drawImage(preloadCanvas, movingImg.x + shakeX, movingImg.y + shakeY, movingImg.width, movingImg.height);
+  ctx.drawImage(preloadCanvas, imageVars.x + shakeX, imageVars.y + shakeY, imageVars.width, imageVars.height);
   ctx.restore();
 
   const visualizerRadius = s.visualizerSize / 2;
   const heightMax = s.heightMax === 0 ? canvas.height : s.heightMax;
+  const averageMult = 1 + (s.averageMult / (average + s.averageMultShift));
 
   for (let i = 0; i < bufferLength; i++) {
     if (s.diff != 0 && Math.abs(audioTarget[i] - prevAudioTarget[i]) <= s.diff) { continue; }
     let volume = audioTarget[i];
 
-    volume *= 1 + (s.indexMult * i / bufferLength);
-
-    if (s.doAverageMult) {
-      volume *= 1 + (s.averageMult / (average + s.averageMultShift));
+    if (s.indexMult>0) {
+      volume *= 1 + (s.indexMult * i / bufferLength);
     }
+    if (s.doAverageMult) {volume *= averageMult;}
     if (s.doTan) {
       volume = s.maxVolume * ((Math.PI / 2) + Math.atan(s.tanMult * volume - s.tanX));
     } else {
@@ -229,22 +244,20 @@ function update() {
     const translateY = clamp(visualizerRadius + s.heightMin + s.heightMultiplier*volume, 0, visualizerRadius + heightMax);
     const scaleX = clamp(s.scaleX * volume, s.scaleXMin, 5);
 
-    const barWidth = Math.max(1, scaleX * 4);
+    const barWidth = scaleX*4<1 ? 1 : scaleX*4; // Min 1
     const barHeight = 1 + (s.scaleY * volume * 10);
 
-    const cos = Math.cos(angle);
-    const sin = Math.sin(angle);
+    const cos = perfCache.cos[i];
+    const sin = perfCache.sin[i];
+    /** Rotate the bars */
     ctx.setTransform(
       cos, sin, -sin, cos,
       centerX + shakeX, centerY + shakeY
     );
 
-    if (s.volumeColorMult !== 0) {
-      const color = Math.floor(s.volumeColorMult * volume) + colors[i];
-      ctx.fillStyle = `hsl(${color}, 50%, 50%)`;
-    } else {
-      ctx.fillStyle = `hsl(${colors[i]}, 50%, 50%)`;
-    }
+    const baseColor = perfCache.colors[i];
+    const finalHue = s.volumeColorMult!==0 ? (Math.floor(s.volumeColorMult * volume) + baseColor) : baseColor;
+    ctx.fillStyle = perfCache.hslHue[finalHue<0 ? (finalHue % 360) + 360 : finalHue % 360];
 
     ctx.fillRect(-barWidth / 2, translateY, barWidth, barHeight);
   }
@@ -283,19 +296,19 @@ function preloadImage() {
   const hRatio = canvas.width / image.width;
   const vRatio = canvas.height / image.height;
   const ratio = Math.min(hRatio, vRatio);
-  movingImg.width = image.width * ratio;
-  movingImg.height = image.height * ratio;
+  imageVars.width = image.width * ratio;
+  imageVars.height = image.height * ratio;
 
-  movingImg.x = (canvas.width - movingImg.width) / 2;
-  movingImg.y = (canvas.height - movingImg.height) / 2;
+  imageVars.x = (canvas.width - imageVars.width) / 2;
+  imageVars.y = (canvas.height - imageVars.height) / 2;
 
-  preloadCanvas.width = movingImg.width;
-  preloadCanvas.height = movingImg.height;
+  preloadCanvas.width = imageVars.width;
+  preloadCanvas.height = imageVars.height;
   if (ratio > 1) {
     preloadCtx.filter = `blur(${settings.backgroundBlur}px)`;
   }
   preloadCtx.clearRect(0, 0, preloadCanvas.width, preloadCanvas.height);
-  preloadCtx.drawImage(image, 0, 0, movingImg.width, movingImg.height);
+  preloadCtx.drawImage(image, 0, 0, imageVars.width, imageVars.height);
 
   preloadedImage = true;
 }
